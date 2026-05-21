@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — Quantéra</title>
+  <meta name="description" content="Configure your perfect Quantéra laptop. Choose storage, memory, and processor to get a real-time price tailored to your needs.">
+
+  <!-- Google Fonts: Inter for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/pricing.css">
+  <link id="favicon" rel="icon" type="image/png" href="images/Quantéra_T_logo_dark.png">
+</head>
+
+<body>
+
+  <!-- ── Transparent sticky nav (Apple.com style) ────────────── -->
+  <nav class="back-nav" aria-label="Page navigation">
+    <a href="index.html" aria-label="Back to Home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Quantéra
+    </a>
+    <span class="back-nav-title" aria-hidden="true">/ Pricing</span>
+  </nav>
+
+  <main class="pricing-page" id="main-content">
+
+    <!-- ══════════════════════════════════════════════════════════
+         ❶  STORAGE PRICE SELECTION CARDS
+             iPhone-style radio cards with check badge animation
+         ══════════════════════════════════════════════════════════ -->
+    <section class="pricing-section" id="storage-section" aria-labelledby="storage-heading">
+
+      <!-- Apple-style two-tone heading: bold word + gray continuation -->
+      <h1 class="apple-heading" id="storage-heading">
+        <strong>Storage.</strong>
+        <span class="apple-heading-sub"> Choose your capacity.</span>
+      </h1>
+
+      <!--
+        Storage card grid
+        Each card: role="radio" + aria-pressed for keyboard/screen reader support.
+        CSS handles hover (scale), active (border-color + glow), and check badge (opacity+scale).
+      -->
+      <div
+        id="storageList"
+        role="radiogroup"
+        aria-label="Storage options"
+        class="storage-list"
+      >
+        <!-- Cards injected by pricing.js StorageCards.init() -->
+      </div>
+
+
+
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         ❷  PRODUCT CONFIGURATOR
+             MacBook-style builder — hits POST /api/pricing/calculate
+         ══════════════════════════════════════════════════════════ -->
+    <section class="pricing-section" id="configurator-section" aria-labelledby="configurator-heading">
+
+      <p class="section-eyebrow">Configurator</p>
+      <h2 class="section-heading" id="configurator-heading">Build Your Quantéra</h2>
+      <p class="section-subheading">
+        Customise every detail — storage, memory, and processor — and see the total price update live.
+      </p>
+
+      <div class="configurator-layout">
+
+        <!-- Left: Option chips (built by Configurator.init()) -->
+        <div id="configuratorOptions" aria-label="Configuration options">
+          <!-- Injected by pricing.js -->
+        </div>
+
+        <!-- Right: Sticky price summary card -->
+        <aside class="price-summary-card" aria-label="Price summary">
+          <div class="price-summary-title">Your Configuration</div>
+
+          <!-- Breakdown lines — updated by JS -->
+          <div id="configuratorBreakdown">
+            <!-- Injected by pricing.js -->
+          </div>
+
+          <!-- Base price line -->
+          <div class="price-summary-line">
+            <span>Base Model</span>
+            <span>₹1,19,900</span>
+          </div>
+
+          <!-- Animated total -->
+          <div class="price-summary-total">
+            <span class="price-summary-total-label">Total</span>
+            <span
+              class="configurator-total"
+              id="configuratorTotal"
+              role="status"
+              aria-live="polite"
+              aria-label="Total configuration price"
+            >
+              ₹1,19,900
+            </span>
+          </div>
+
+          <a href="laptops.html" class="btn-configure" id="configuratorCTA">
+            Shop This Configuration
+          </a>
+
+          <!-- API status indicator -->
+          <div class="api-status" aria-hidden="true">
+            <span class="api-dot"></span>
+            <span class="api-status-text">Live pricing</span>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         ❸  SUBSCRIPTION TIERS
+             Apple One-style plans with monthly/yearly toggle
+         ══════════════════════════════════════════════════════════ -->
+    <section class="pricing-section" id="subscription-section" aria-labelledby="subscription-heading">
+
+      <p class="section-eyebrow">Plans</p>
+      <h2 class="section-heading" id="subscription-heading">Find the Right Plan</h2>
+      <p class="section-subheading">
+        From individual use to enterprise scale — every plan includes cloud sync, AI diagnostics, and premium after-sales support.
+      </p>
+
+      <!-- Billing period toggle — Apple-style pill switch -->
+      <div class="billing-toggle-wrap" role="group" aria-label="Billing period selection">
+        <span
+          class="billing-toggle-label active"
+          id="billingMonthly"
+          aria-hidden="true"
+        >
+          Monthly
+        </span>
+
+        <label class="toggle-switch" aria-label="Toggle yearly billing">
+          <input
+            type="checkbox"
+            id="billingToggle"
+            role="switch"
+            aria-checked="false"
+          >
+          <!-- CSS animates track background + thumb translateX on :checked -->
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </label>
+
+        <span
+          class="billing-toggle-label"
+          id="billingYearly"
+          aria-hidden="true"
+        >
+          Yearly
+        </span>
+
+        <span class="yearly-badge" aria-label="Save up to 20% with yearly billing">
+          Save 20%
+        </span>
+      </div>
+
+      <!--
+        Plan cards grid — built by Subscriptions.init()
+        Cards: role="radio" + aria-pressed.
+        Hover: translateY(-5px) + shadow — CSS handles it.
+        Selected: glow border — CSS .selected class.
+        Price change: JS adds .animating-out, swaps text, removes class.
+      -->
+      <div
+        id="plansGrid"
+        class="plans-grid"
+        role="radiogroup"
+        aria-label="Subscription plans"
+      >
+        <!-- Cards injected by pricing.js Subscriptions.init() -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer note -->
+  <footer class="pricing-footer" aria-label="Page footer">
+    <p>All prices are in Indian Rupees (₹) and include applicable taxes.<br>
+       <a href="index.html">Back to Quantéra Store</a> · <a href="laptops.html">Browse Laptops</a>
+    </p>
+  </footer>
+
+  <!-- Pricing JS — loaded after DOM, modules use DOMContentLoaded internally -->
+  <script src="js/pricing.js"></script>
+
+</body>
+</html>

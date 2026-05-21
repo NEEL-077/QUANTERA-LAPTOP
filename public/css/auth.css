@@ -1,0 +1,536 @@
+/* ===================================================
+   AUTH PAGE - Exact replica of shadcn/ui React component
+   =================================================== */
+
+/* Reset & base */
+.auth-body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: var(--bg-color);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+/* Main container - md:h-screen md:overflow-hidden lg:grid lg:grid-cols-2 */
+.auth-main-container {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+    .auth-main-container {
+        height: 100vh;
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 1024px) {
+    .auth-main-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Left section - bg-muted/60 relative hidden h-full flex-col border-r p-10 lg:flex */
+.auth-left-section {
+    background: rgba(255, 255, 255, 0.02); /* bg-muted/60 equivalent */
+    position: relative;
+    display: none;
+    height: 100%;
+    flex-direction: column;
+    border-right: 1px solid var(--glass-border);
+    padding: 2.5rem; /* p-10 */
+}
+
+@media (min-width: 1024px) {
+    .auth-left-section {
+        display: flex;
+    }
+}
+
+[data-theme="minimalistic"] .auth-left-section {
+    background: rgba(0, 0, 0, 0.02);
+    border-right-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient overlay - from-background absolute inset-0 z-10 bg-gradient-to-t to-transparent */
+.auth-gradient-overlay {
+    background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Brand section - z-10 flex items-center gap-2 */
+.auth-brand-section {
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.brand-text {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    margin: 0;
+}
+
+/* Testimonial section - z-10 mt-auto */
+.auth-testimonial-section {
+    z-index: 10;
+    margin-top: auto;
+}
+
+.testimonial-quote {
+    margin: 0;
+}
+
+.quote-text {
+    font-size: 1.25rem; /* text-xl */
+    margin: 0 0 0.5rem 0;
+    line-height: 1.6;
+}
+
+.quote-author {
+    font-family: 'Courier New', monospace; /* font-mono */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 600; /* font-semibold */
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+[data-theme="minimalistic"] .quote-author {
+    color: #6c757d;
+}
+
+/* Floating paths container - absolute inset-0 */
+.floating-paths-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.floating-paths-wrapper {
+    position: absolute;
+    inset: 0;
+}
+
+.floating-paths-svg {
+    height: 100%;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.1); /* text-slate-950 dark:text-white equivalent */
+}
+
+[data-theme="minimalistic"] .floating-paths-svg {
+    color: rgba(0, 0, 0, 0.05);
+}
+
+/* Right section - relative flex min-h-screen flex-col justify-center p-4 */
+.auth-right-section {
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Background decorative - absolute inset-0 isolate contain-strict -z-10 opacity-60 */
+.auth-bg-decorative {
+    position: absolute;
+    inset: 0;
+    isolation: isolate;
+    z-index: -10;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.bg-circle {
+    position: absolute;
+    border-radius: 50%;
+}
+
+/* First circle - bg-[radial-gradient(...)] absolute top-0 right-0 h-320 w-140 -translate-y-87.5 rounded-full */
+.bg-circle-1 {
+    background: radial-gradient(68.54% 68.72% at 55.02% 31.46%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.01) 80%);
+    top: 0;
+    right: 0;
+    height: 20rem; /* h-320 equivalent */
+    width: 8.75rem; /* w-140 equivalent */
+    transform: translateY(-87.5%);
+}
+
+/* Second circle */
+.bg-circle-2 {
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 80%, transparent 100%);
+    top: 0;
+    right: 0;
+    height: 20rem;
+    width: 15rem;
+    transform: translate(5%, -50%);
+}
+
+/* Third circle */
+.bg-circle-3 {
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 80%, transparent 100%);
+    top: 0;
+    right: 0;
+    height: 20rem;
+    width: 15rem;
+    transform: translateY(-87.5%);
+}
+
+[data-theme="minimalistic"] .bg-circle-1 {
+    background: radial-gradient(68.54% 68.72% at 55.02% 31.46%, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.02) 50%, rgba(0, 0, 0, 0.01) 80%);
+}
+
+[data-theme="minimalistic"] .bg-circle-2,
+[data-theme="minimalistic"] .bg-circle-3 {
+    background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.01) 80%, transparent 100%);
+}
+
+/* Back button - variant="ghost" className="absolute top-7 left-5" */
+.auth-back-button {
+    position: absolute;
+    top: 1.75rem; /* top-7 */
+    left: 1.25rem; /* left-5 */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.auth-back-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+}
+
+[data-theme="minimalistic"] .auth-back-button {
+    color: #6c757d;
+}
+
+[data-theme="minimalistic"] .auth-back-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a1a;
+}
+
+/* Content container - mx-auto space-y-4 sm:w-sm */
+.auth-content-container {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 24rem; /* sm:w-sm */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* space-y-4 */
+}
+
+/* Mobile brand - flex items-center gap-2 lg:hidden */
+.auth-mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+    .auth-mobile-brand {
+        display: none;
+    }
+}
+
+/* Header section - flex flex-col space-y-1 */
+.auth-header-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.auth-title {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    letter-spacing: 0.025em; /* tracking-wide */
+    margin: 0;
+    line-height: 1.2;
+}
+
+.auth-subtitle {
+    color: rgba(255, 255, 255, 0.6); /* text-muted-foreground */
+    font-size: 1rem; /* text-base */
+    margin: 0;
+}
+
+[data-theme="minimalistic"] .auth-subtitle {
+    color: #6c757d;
+}
+
+/* Social buttons - space-y-2 */
+.auth-social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.social-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.75rem; /* size="lg" */
+    padding: 0.5rem 2rem; /* lg: h-11 rounded-md px-8 */
+    background: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.375rem;
+    color: var(--bg-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.social-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+}
+
+.social-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+[data-theme="minimalistic"] .social-btn {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+[data-theme="minimalistic"] .social-btn:hover {
+    background: #f8f9fa;
+}
+
+/* Separator - AuthSeparator component */
+.auth-separator {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.separator-line {
+    background: rgba(255, 255, 255, 0.1); /* bg-border */
+    height: 1px;
+    width: 100%;
+}
+
+.separator-text {
+    color: rgba(255, 255, 255, 0.6); /* text-muted-foreground */
+    padding: 0 0.5rem;
+    font-size: 0.75rem; /* text-xs */
+}
+
+[data-theme="minimalistic"] .separator-line {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="minimalistic"] .separator-text {
+    color: #6c757d;
+}
+
+/* Email form - space-y-2 */
+.auth-email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-description {
+    color: rgba(255, 255, 255, 0.6); /* text-muted-foreground */
+    text-align: left; /* text-start */
+    font-size: 0.75rem; /* text-xs */
+    margin: 0;
+}
+
+[data-theme="minimalistic"] .form-description {
+    color: #6c757d;
+}
+
+/* Input container - relative h-max */
+.input-container {
+    position: relative;
+    height: max-content;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.email-input {
+    width: 100%;
+    height: 2.5rem; /* h-10 */
+    border-radius: 0.375rem; /* rounded-md */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* border-input */
+    background: rgba(255, 255, 255, 0.04); /* bg-background */
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem; /* px-3 py-2 + ps-9 */
+    font-size: 0.875rem; /* text-sm */
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.email-input::placeholder {
+    color: rgba(255, 255, 255, 0.4); /* placeholder:text-muted-foreground */
+}
+
+.email-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2); /* focus-visible:ring-2 focus-visible:ring-ring */
+}
+
+.input-icon {
+    color: rgba(255, 255, 255, 0.4); /* text-muted-foreground */
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0.75rem; /* ps-3 */
+}
+
+[data-theme="minimalistic"] .email-input {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #1a1a1a;
+}
+
+[data-theme="minimalistic"] .email-input::placeholder {
+    color: #adb5bd;
+}
+
+[data-theme="minimalistic"] .email-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(0, 71, 171, 0.2);
+}
+
+[data-theme="minimalistic"] .input-icon {
+    color: #adb5bd;
+}
+
+/* Continue button - w-full */
+.continue-btn {
+    width: 100%;
+    height: 2.5rem; /* h-10 */
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    background: var(--text-color);
+    border: none;
+    border-radius: 0.375rem;
+    color: var(--bg-color);
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.continue-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="minimalistic"] .continue-btn {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+[data-theme="minimalistic"] .continue-btn:hover {
+    background: #2d2d2d;
+}
+
+/* Terms text - text-muted-foreground mt-8 text-sm */
+.auth-terms-text {
+    color: rgba(255, 255, 255, 0.6); /* text-muted-foreground */
+    margin-top: 2rem; /* mt-8 */
+    font-size: 0.875rem; /* text-sm */
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.terms-link {
+    color: rgba(255, 255, 255, 0.8); /* hover:text-primary */
+    text-decoration: underline;
+    text-underline-offset: 4px; /* underline-offset-4 */
+    transition: color 0.2s ease;
+}
+
+.terms-link:hover {
+    color: var(--accent-color); /* hover:text-primary */
+}
+
+[data-theme="minimalistic"] .auth-terms-text {
+    color: #6c757d;
+}
+
+[data-theme="minimalistic"] .terms-link {
+    color: #495057;
+}
+
+[data-theme="minimalistic"] .terms-link:hover {
+    color: var(--accent-color);
+}
+
+/* Framer Motion-like path animation */
+@keyframes pathAnimation {
+    0% {
+        stroke-dashoffset: 300;
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        stroke-dashoffset: -700;
+        opacity: 0.3;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .auth-right-section {
+        padding: 1rem;
+    }
+    
+    .auth-content-container {
+        max-width: 100%;
+    }
+    
+    .auth-back-button {
+        top: 1rem;
+        left: 1rem;
+    }
+}

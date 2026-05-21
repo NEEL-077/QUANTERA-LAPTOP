@@ -1,0 +1,184 @@
+/* Premium UI Components (Shadcn-Inspired) */
+
+:root {
+    --select-trigger-bg: rgba(255, 255, 255, 0.03);
+    --select-border: rgba(255, 255, 255, 0.1);
+    --select-hover-bg: rgba(255, 255, 255, 0.05);
+    --select-focus-ring: rgba(229, 9, 20, 0.4);
+    --popover-bg: #141414;
+    --popover-border: rgba(255, 255, 255, 0.15);
+    --popover-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* --- Premium Select Trigger --- */
+.q-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 16px;
+    background: var(--select-trigger-bg);
+    border: 1px solid var(--select-border);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    position: relative;
+}
+
+.q-select-trigger:hover {
+    background: var(--select-hover-bg);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.q-select-trigger:focus-visible,
+.q-select-trigger.active {
+    outline: none;
+    border-color: #E50914;
+    box-shadow: 0 0 0 4px var(--select-focus-ring);
+}
+
+.q-select-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+    transition: transform 0.2s ease;
+}
+
+.q-select-trigger.active .q-select-icon {
+    transform: rotate(180deg);
+}
+
+/* --- Premium Select Content (Popover) --- */
+.q-select-content {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    background: var(--popover-bg);
+    border: 1px solid var(--popover-border);
+    border-radius: 8px;
+    box-shadow: var(--popover-shadow);
+    z-index: 99999 !important;
+    padding: 6px;
+    opacity: 0;
+    visibility: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: translateY(-8px) scale(0.98);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.q-select-content.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* --- Select Viewport / List --- */
+.q-select-viewport {
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.q-select-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.q-select-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.q-select-item.selected {
+    background: rgba(229, 9, 20, 0.1);
+    color: #E50914;
+}
+
+.q-select-item-check {
+    width: 16px;
+    height: 16px;
+    display: none;
+}
+
+.q-select-item.selected .q-select-item-check {
+    display: block;
+}
+
+/* --- Premium Textbox (Input) --- */
+.q-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 16px;
+    background: var(--select-trigger-bg);
+    border: 1px solid var(--select-border);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.q-input:focus {
+    outline: none;
+    border-color: #E50914;
+    box-shadow: 0 0 0 4px var(--select-focus-ring);
+    background: var(--select-hover-bg);
+}
+
+.q-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Premium Combobox (Input + Dropdown) --- */
+.q-combobox-container {
+    position: relative;
+    width: 100%;
+}
+
+.q-combobox-input {
+    padding-right: 40px;
+    /* Space for icon */
+}
+
+.q-combobox-container .q-select-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.q-select-item.hidden {
+    display: none;
+}
+
+/* --- Admin Form Group Layout --- */
+.q-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.q-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

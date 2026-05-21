@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Quantéra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <link rel="stylesheet" href="css/alert.css">
+    <script src="js/navigation-state.js"></script>
+    <script src="js/navbar.js" defer></script>
+    <script src="js/notifications.js" defer></script>
+    <link id="favicon" rel="icon" type="image/png" href="images/Quantéra_T_logo_dark.png">
+</head>
+
+<body>
+    <div id="loadingState" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Processing your order...</p>
+    </div>
+
+    <div class="checkout-container" id="checkoutContainer">
+        <div class="checkout-header">
+            <div class="checkout-progress">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Information</div>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Shipping</div>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Review</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-main">
+            <div class="checkout-forms">
+                <div class="checkout-step active" id="step1">
+                    <div class="step-header">
+                        <h2>Customer Information</h2>
+                        <p>Please provide your contact and billing details</p>
+                    </div>
+
+                    <form id="customerForm" class="checkout-form">
+                        <div class="form-section">
+                            <h3>Contact Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">First Name *</label>
+                                    <input type="text" id="firstName" name="firstName" required>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name *</label>
+                                    <input type="text" id="lastName" name="lastName" required>
+                                    <span class="error-message"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" name="email" required>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number *</label>
+                                    <input type="tel" id="phone" name="phone" required>
+                                    <span class="error-message"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Billing Address</h3>
+                            <div class="form-group">
+                                <label for="address1">Address Line 1 *</label>
+                                <input type="text" id="address1" name="address1" required>
+                                <span class="error-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="address2">Address Line 2</label>
+                                <input type="text" id="address2" name="address2">
+                                <span class="error-message"></span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">City *</label>
+                                    <input type="text" id="city" name="city" required>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State *</label>
+                                    <select id="state" name="state" required>
+                                        <option value="">Select State</option>
+                                    </select>
+                                    <span class="error-message"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="zipCode">PIN Code *</label>
+                                    <input type="text" id="zipCode" name="zipCode" required>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <input type="text" id="country" name="country" value="India" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="goToCart()">← Back to Cart</button>
+                            <button type="submit" class="btn btn-primary">Continue to Shipping</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 2: Shipping -->
+                <div class="checkout-step" id="step2">
+                    <div class="step-header">
+                        <h2>Shipping Information</h2>
+                        <p>Choose your delivery method and address</p>
+                    </div>
+
+                    <form id="shippingForm" class="checkout-form">
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>Shipping Address</h3>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="sameAsBilling" checked>
+                                        <span class="checkmark"></span>
+                                        Same as billing address
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="shippingAddressForm" style="display: none;">
+                                <div class="form-group">
+                                    <label for="shippingAddress1">Address Line 1 *</label>
+                                    <input type="text" id="shippingAddress1" name="shippingAddress1">
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="shippingAddress2">Address Line 2</label>
+                                    <input type="text" id="shippingAddress2" name="shippingAddress2">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="shippingCity">City *</label>
+                                        <input type="text" id="shippingCity" name="shippingCity">
+                                        <span class="error-message"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="shippingState">State *</label>
+                                        <select id="shippingState" name="shippingState">
+                                            <option value="">Select State</option>
+                                        </select>
+                                        <span class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="shippingZipCode">PIN Code *</label>
+                                        <input type="text" id="shippingZipCode" name="shippingZipCode">
+                                        <span class="error-message"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="shippingCountry">Country</label>
+                                        <input type="text" id="shippingCountry" name="shippingCountry" value="India"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Delivery Method</h3>
+                            <div class="shipping-options" id="shippingOptions">
+                                <!-- Shipping options will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="previousStep()">← Back</button>
+                            <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 3: Payment -->
+                <div class="checkout-step" id="step3">
+                    <div class="step-header">
+                        <h2>Payment Information</h2>
+                        <p>Choose your payment method and enter details</p>
+                    </div>
+
+                    <form id="paymentForm" class="checkout-form">
+                        <div class="form-section">
+                            <h3>Payment Method</h3>
+                            <div class="payment-methods">
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="card" checked>
+                                    <div class="payment-option">
+                                        <div class="payment-icon">💳</div>
+                                        <div>
+                                            <div class="payment-title">Credit/Debit Card</div>
+                                            <div class="payment-desc">Visa, MasterCard, RuPay</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="upi">
+                                    <div class="payment-option">
+                                        <div class="payment-icon">📱</div>
+                                        <div>
+                                            <div class="payment-title">UPI Payment</div>
+                                            <div class="payment-desc">PhonePe, Google Pay, Paytm</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="netbanking">
+                                    <div class="payment-option">
+                                        <div class="payment-icon">🏦</div>
+                                        <div>
+                                            <div class="payment-title">Net Banking</div>
+                                            <div class="payment-desc">All major banks supported</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="cod">
+                                    <div class="payment-option">
+                                        <div class="payment-icon">💰</div>
+                                        <div>
+                                            <div class="payment-title">Cash on Delivery</div>
+                                            <div class="payment-desc">Pay when you receive</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Card Payment Form -->
+                        <div id="cardPaymentForm" class="payment-form">
+                            <div class="form-section">
+                                <h3>Card Details</h3>
+                                <div class="form-group">
+                                    <label for="cardNumber">Card Number *</label>
+                                    <input type="text" id="cardNumber" name="cardNumber"
+                                        placeholder="1234 5678 9012 3456" maxlength="19">
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="expiryDate">Expiry Date *</label>
+                                        <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY"
+                                            maxlength="5">
+                                        <span class="error-message"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cvv">CVV *</label>
+                                        <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4">
+                                        <span class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardName">Name on Card *</label>
+                                    <input type="text" id="cardName" name="cardName" placeholder="John Doe">
+                                    <span class="error-message"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPI Payment Form -->
+                        <div id="upiPaymentForm" class="payment-form" style="display: none;">
+                            <div class="form-section">
+                                <h3>UPI Details</h3>
+                                <div class="form-group">
+                                    <label for="upiId">UPI ID *</label>
+                                    <input type="text" id="upiId" name="upiId" placeholder="yourname@paytm">
+                                    <span class="error-message"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Net Banking Form -->
+                        <div id="netbankingPaymentForm" class="payment-form" style="display: none;">
+                            <div class="form-section">
+                                <h3>Select Your Bank</h3>
+                                <div class="form-group">
+                                    <label for="bankName">Bank *</label>
+                                    <select id="bankName" name="bankName">
+                                        <option value="">Select Bank</option>
+                                        <option value="sbi">State Bank of India</option>
+                                        <option value="hdfc">HDFC Bank</option>
+                                        <option value="icici">ICICI Bank</option>
+                                        <option value="axis">Axis Bank</option>
+                                        <option value="kotak">Kotak Mahindra Bank</option>
+                                        <option value="pnb">Punjab National Bank</option>
+                                        <option value="bob">Bank of Baroda</option>
+                                        <option value="canara">Canara Bank</option>
+                                    </select>
+                                    <span class="error-message"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COD Form -->
+                        <div id="codPaymentForm" class="payment-form" style="display: none;">
+                            <div class="form-section">
+                                <h3>Cash on Delivery</h3>
+                                <p style="color: rgba(255, 255, 255, 0.7); margin: 0;">
+                                    You will pay ₹50 extra as COD charges. Payment can be made in cash or card to the
+                                    delivery person.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="previousStep()">← Back</button>
+                            <button type="submit" class="btn btn-primary">Review Order</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 4: Review -->
+                <div class="checkout-step" id="step4">
+                    <div class="step-header">
+                        <h2>Review Your Order</h2>
+                        <p>Please review your order details before placing the order</p>
+                    </div>
+
+                    <div class="review-sections">
+                        <div class="review-section">
+                            <div class="review-header">
+                                <h3>Customer Information</h3>
+                                <button type="button" class="edit-btn" onclick="goToStep(1)">Edit</button>
+                            </div>
+                            <div class="review-content" id="customerReview">
+                                <!-- Customer info will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="review-section">
+                            <div class="review-header">
+                                <h3>Shipping Information</h3>
+                                <button type="button" class="edit-btn" onclick="goToStep(2)">Edit</button>
+                            </div>
+                            <div class="review-content" id="shippingReview">
+                                <!-- Shipping info will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="review-section">
+                            <div class="review-header">
+                                <h3>Payment Information</h3>
+                                <button type="button" class="edit-btn" onclick="goToStep(3)">Edit</button>
+                            </div>
+                            <div class="review-content" id="paymentReview">
+                                <!-- Payment info will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="terms-section">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                I agree to the <a href="#" class="terms-link">Terms and Conditions</a> and <a href="#"
+                                    class="terms-link">Privacy Policy</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="previousStep()">← Back</button>
+                        <button type="button" class="btn btn-primary btn-large" onclick="placeOrder()">Place
+                            Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <div class="summary-card">
+                    <h3>Order Summary</h3>
+                    <div class="summary-items" id="summaryItems"></div>
+
+                    <div class="promo-section">
+                        <div class="promo-input">
+                            <input type="text" id="promoCode" placeholder="Enter promo code">
+                            <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
+                        </div>
+                        <div id="promoMessage" class="promo-message"></div>
+                    </div>
+
+                    <div class="price-breakdown">
+                        <div class="price-row">
+                            <span>Subtotal</span>
+                            <span id="subtotalAmount">₹0</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Shipping</span>
+                            <span id="shippingAmount">Free</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="inclusive-tax-label">Includes GST (18%)</span>
+                            <span id="taxAmount">₹0</span>
+                        </div>
+                        <div class="price-row discount-row" id="discountRow" style="display: none;">
+                            <span>Discount</span>
+                            <span id="discountAmount">-₹0</span>
+                        </div>
+                        <div class="price-row total-row">
+                            <span>Total</span>
+                            <span id="totalAmount">₹0</span>
+                        </div>
+                    </div>
+
+                    <div class="security-badge">
+                        <div class="security-icon">🔒</div>
+                        <div class="security-text">
+                            <div>Secure Checkout</div>
+                            <div>Your information is protected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="confirmationModal" class="modal-overlay" style="display: none;">
+        <div class="confirmation-modal">
+            <div class="confirmation-header">
+                <div class="success-icon">🎉</div>
+                <h2>Order Placed Successfully!</h2>
+                <p>Thank you for your purchase. Your order has been confirmed.</p>
+            </div>
+
+            <div class="confirmation-details" id="confirmationDetails">
+                <!-- Order details will be populated by JavaScript -->
+            </div>
+
+            <div class="confirmation-actions">
+                <button type="button" class="btn btn-primary" onclick="viewOrder()">Track Order</button>
+                <button type="button" class="btn btn-outline" onclick="continueShopping()">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/checkout.js?v=1"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

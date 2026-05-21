@@ -1,0 +1,803 @@
+/* Laptops Page Specific Styles */
+
+.laptops-hero {
+    background: #000000;
+    padding: 160px 20px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.laptops-hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.laptops-hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+/* Shimmer handled by global .premium-shimmer class */
+
+.laptops-hero p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Brand Selection Section */
+.brand-selection-section {
+    padding: 60px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.brand-selection-container h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 40px;
+}
+
+.brand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.brand-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(229, 9, 20, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.brand-card:hover::before {
+    left: 100%;
+}
+
+.brand-card:hover {
+    transform: translateY(-8px);
+    border-color: #E50914;
+    box-shadow: 0 20px 40px rgba(229, 9, 20, 0.2);
+}
+
+.brand-logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #E50914, #E50914);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 8px;
+    /* Add padding to ensure logos don't touch edges */
+}
+
+.brand-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+}
+
+.brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    /* Show original logo colors - they should be visible on gradient */
+    background: rgba(255, 255, 255, 0.9);
+    /* Add white background for better contrast */
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.brand-logo:hover .brand-logo-img {
+    transform: scale(1.1);
+}
+
+.brand-logo-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-count {
+    color: #E50914;
+    font-size: 1rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+/* Brand Page Section */
+.brand-page-section {
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.back-navigation {
+    max-width: 1400px;
+    margin: 0 auto 30px;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-5px);
+}
+
+.back-icon {
+    font-size: 1.2rem;
+}
+
+.brand-page-header {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand-logo-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(45deg, #E50914, #E50914);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.brand-logo-large .brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.brand-info-large h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 10px 0;
+}
+
+.brand-info-large p {
+    color: #E50914;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Category Filters */
+.category-filters {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-tab {
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.filter-tab:hover,
+.filter-tab.active {
+    background: linear-gradient(45deg, #E50914, #B20710);
+    border-color: #E50914;
+    transform: translateY(-2px);
+}
+
+.additional-filters {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.additional-filters .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.additional-filters select,
+.additional-filters input {
+    padding: 10px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.9rem;
+    min-width: 180px;
+}
+
+.additional-filters select:focus,
+.additional-filters input:focus {
+    outline: none;
+    border-color: #E50914;
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+.clear-btn {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #E50914, #B20710);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.clear-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Brand Laptops Container */
+.brand-laptops-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.brand-laptops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+/* Enhanced Laptop Card */
+.laptop-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.laptop-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(229, 9, 20, 0.05), transparent);
+    transition: left 0.5s;
+}
+
+.laptop-card:hover::before {
+    left: 100%;
+}
+
+.laptop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: #E50914;
+}
+
+.laptop-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.laptop-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.laptop-info h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+}
+
+.laptop-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(45deg, #E50914, #B20710);
+    color: white;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.laptop-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #E50914;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.laptop-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.spec-icon {
+    width: 16px;
+    height: 16px;
+    background: #E50914;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(45deg, #E50914, #B20710);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+}
+
+.view-details-btn:hover {
+    background: linear-gradient(45deg, #B20710, #8E060D);
+    transform: translateY(-2px);
+}
+
+/* Loading and Empty States */
+.loading-message,
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ccc;
+    font-size: 1.2rem;
+}
+
+.no-results {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .laptops-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .brand-selection-container h2 {
+        font-size: 2rem;
+    }
+
+    .brand-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .brand-page-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .brand-info-large h1 {
+        font-size: 2rem;
+    }
+
+    .filter-tabs {
+        justify-content: center;
+    }
+
+    .additional-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .additional-filters .filter-group {
+        width: 100%;
+    }
+
+    .additional-filters select,
+    .additional-filters input {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .brand-laptops-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .laptops-hero {
+        padding: 100px 15px 60px;
+    }
+
+    .laptops-hero h1 {
+        font-size: 2rem;
+    }
+
+    .brand-selection-section {
+        padding: 40px 15px;
+    }
+
+    .brand-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .laptop-card {
+        padding: 15px;
+    }
+}
+
+/* Laptop Card */
+.laptop-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.laptop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: #E50914;
+}
+
+.laptop-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.laptop-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.laptop-info h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.laptop-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(45deg, #E50914, #B20710);
+    color: white;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.laptop-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #E50914;
+    margin-bottom: 15px;
+}
+
+.laptop-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.spec-icon {
+    width: 16px;
+    height: 16px;
+    background: #E50914;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(45deg, #E50914, #B20710);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.view-details-btn:hover {
+    background: linear-gradient(45deg, #B20710, #8E060D);
+    transform: translateY(-2px);
+}
+
+/* Loading and Empty States */
+.loading-message,
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ccc;
+    font-size: 1.2rem;
+}
+
+.no-results {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .laptops-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .brand-nav-container {
+        gap: 15px;
+    }
+
+    .brand-link {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+
+    .laptops-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .laptops-hero {
+        padding: 100px 15px 60px;
+    }
+
+    .laptops-hero h1 {
+        font-size: 2rem;
+    }
+
+    .brand-nav-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .laptop-card {
+        padding: 15px;
+    }
+}
+
+/* =====================================================
+   NAVIGATION STATE RESTORATION STYLES
+   ===================================================== */
+
+/* Smooth restoration animation */
+.state-restoring .laptop-grid,
+.state-restoring .brand-grid {
+    animation: stateRestoreGrid 0.6s ease-out;
+}
+
+.state-restoring .filters-section {
+    animation: stateRestoreFilters 0.5s ease-out;
+}
+
+@keyframes stateRestoreGrid {
+    0% {
+        opacity: 0.8;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes stateRestoreFilters {
+    0% {
+        opacity: 0.7;
+        transform: translateX(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Enhanced filter highlight when restored */
+.filter-restored {
+    animation: filterHighlight 1s ease-out;
+}
+
+@keyframes filterHighlight {
+    0% {
+        background: rgba(229, 9, 20, 0.2);
+        transform: scale(1.02);
+    }
+
+    50% {
+        background: rgba(229, 9, 20, 0.1);
+    }
+
+    100% {
+        background: transparent;
+        transform: scale(1);
+    }
+}
+
+/* Brand tab restoration highlight */
+.brand-tab.restored {
+    animation: brandTabRestore 0.8s ease-out;
+}
+
+@keyframes brandTabRestore {
+    0% {
+        box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.4);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 9, 20, 0);
+    }
+}

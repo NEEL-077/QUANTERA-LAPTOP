@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started | Quantéra</title>
+    <meta name="description" content="Design and dev partner for startups and founders.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/signup.css">
+</head>
+
+<body>
+    <div class="signup-container">
+        <div class="signup-card">
+            <!-- Background overlays -->
+            <div class="bg-overlay"></div>
+
+            <!-- Backdrop blur strips -->
+            <div class="backdrop-strips">
+                <div class="strip"></div>
+                <div class="strip"></div>
+                <div class="strip"></div>
+                <div class="strip"></div>
+                <div class="strip"></div>
+                <div class="strip"></div>
+            </div>
+
+            <!-- Decorative circles -->
+            <div class="circle-large"></div>
+            <div class="circle-small-1"></div>
+            <div class="circle-small-2"></div>
+
+            <!-- Left side - Hero section -->
+            <div class="hero-section">
+                <h1 class="hero-title">Design and dev partner for startups and founders.</h1>
+            </div>
+
+            <!-- Right side - Form section -->
+            <div class="form-section">
+                <div class="form-header">
+                    <div class="icon-container">
+                        <!-- Sun/Sunburst icon -->
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2"></path>
+                            <path d="M12 20v2"></path>
+                            <path d="m4.93 4.93 1.41 1.41"></path>
+                            <path d="m17.66 17.66 1.41 1.41"></path>
+                            <path d="M2 12h2"></path>
+                            <path d="M20 12h2"></path>
+                            <path d="m6.34 17.66-1.41 1.41"></path>
+                            <path d="m19.07 4.93-1.41 1.41"></path>
+                        </svg>
+                    </div>
+                    <h2 class="form-title">Get Started</h2>
+                    <p class="form-subtitle">Welcome to HextaStudio — Let's get started</p>
+                </div>
+
+                <form class="signup-form" id="signupForm" novalidate>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Your email</label>
+                        <input type="email" id="email" name="email" placeholder="hi@hextastudio.in" class="form-input"
+                            aria-describedby="email-error">
+                        <p id="email-error" class="error-message" style="display: none;"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Create new password</label>
+                        <input type="password" id="password" name="password" class="form-input"
+                            aria-describedby="password-error">
+                        <p id="password-error" class="error-message" style="display: none;"></p>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Create a new account
+                    </button>
+
+                    <div class="login-link">
+                        Already have account?
+                        <a href="login.html" class="link">Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/signup.js"></script>
+</body>
+
+</html>

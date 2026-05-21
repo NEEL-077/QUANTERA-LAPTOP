@@ -1,0 +1,402 @@
+/* ============================================================
+   QUANTÉRA — PREMIUM CIRCULAR 3D GALLERY HERO
+   Inspired by CircularGallery React component, pure vanilla CSS
+   ============================================================ */
+
+/* ── Page prep ─────────────────────────────────────────────── */
+.hg-page {
+    background: #030303;
+}
+
+/* ── Hero wrapper (scrollable height for scroll-to-rotate UX) ─ */
+.hg-scroll-wrapper {
+    position: relative;
+    width: 100%;
+    height: 500vh;            /* lots of scroll room */
+    background: #030303;
+}
+
+/* ── Sticky viewport that stays in view while user scrolls ──── */
+.hg-sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    isolation: isolate;
+}
+
+/* ── Atmospheric background ─────────────────────────────────── */
+.hg-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 80% 60% at 60% 90%, rgba(229,50,10,.48) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 45% at 90% 100%, rgba(200,25,5,.35) 0%, transparent 55%),
+        radial-gradient(ellipse 100% 40% at 50% 100%, rgba(130,12,0,.24) 0%, transparent 58%),
+        radial-gradient(ellipse 42% 30% at 20% 15%, rgba(10,2,0,.65) 0%, transparent 60%),
+        linear-gradient(160deg, #030303 0%, #0a0202 45%, #0f0303 100%);
+}
+
+/* Planet-arc glow (bottom right) */
+.hg-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -40vw; right: -14vw;
+    width: 88vw; height: 88vw;
+    border-radius: 50%;
+    border: 1.5px solid rgba(229,80,20,.18);
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(229,60,10,.15) 0%, transparent 60%);
+    box-shadow: 0 0 70px rgba(229,60,10,.10), inset 0 0 80px rgba(229,40,0,.07);
+    animation: hgOrbit 9s ease-in-out infinite alternate;
+}
+
+@keyframes hgOrbit {
+    from { opacity: .8; transform: scale(1); }
+    to   { opacity: 1;  transform: scale(1.025); }
+}
+
+/* Dot-grid texture */
+.hg-grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Hero headline (center-top overlay) ─────────────────────── */
+.hg-headline {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 30;
+    pointer-events: none;
+    opacity: 0;
+    animation: hgFadeIn .8s cubic-bezier(.22,1,.36,1) .3s both;
+}
+
+.hg-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.13);
+    backdrop-filter: blur(14px);
+    border-radius: 9999px;
+    padding: 6px 16px 6px 8px;
+    margin-bottom: 18px;
+    color: rgba(255,255,255,.9);
+    font-size: .79rem;
+    font-weight: 500;
+    letter-spacing: .2px;
+}
+
+.hg-eyebrow-chip {
+    background: rgba(255,255,255,.9);
+    color: #111;
+    font-size: .68rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 9999px;
+}
+
+.hg-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    font-weight: 400;
+    line-height: 1.06;
+    letter-spacing: -.02em;
+    color: #fff;
+    margin: 0 0 14px;
+    text-shadow: 0 4px 40px rgba(0,0,0,.7);
+}
+
+.hg-title em {
+    font-style: italic;
+    color: rgba(255,255,255,.75);
+}
+
+.hg-subtitle {
+    font-size: clamp(.88rem, 1.5vw, 1rem);
+    color: rgba(255,255,255,.55);
+    margin: 0;
+    letter-spacing: .2px;
+}
+
+/* scroll hint */
+.hg-scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: .74rem;
+    color: rgba(255,255,255,.38);
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: hgFadeIn 1s ease .9s both;
+}
+
+.hg-scroll-arrow {
+    width: 20px;
+    height: 32px;
+    border: 1.5px solid rgba(255,255,255,.22);
+    border-radius: 10px;
+    position: relative;
+}
+
+.hg-scroll-arrow::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 8px;
+    background: rgba(255,255,255,.5);
+    border-radius: 2px;
+    animation: hgScrollDot 1.6s ease infinite;
+}
+
+@keyframes hgScrollDot {
+    0%   { transform: translateX(-50%) translateY(0); opacity: 1; }
+    80%  { transform: translateX(-50%) translateY(10px); opacity: 0; }
+    100% { transform: translateX(-50%) translateY(0); opacity: 0; }
+}
+
+/* ── 3D Carousel ─────────────────────────────────────────────── */
+.hg-perspective {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 2000px;
+    pointer-events: none;   /* inner cards re-enable */
+}
+
+.hg-ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    /* rotation set via JS */
+    will-change: transform;
+}
+
+/* ── Single gallery card ─────────────────────────────────────── */
+.hg-card {
+    position: absolute;
+    width: 380px;
+    height: 285px;
+    left: 50%;
+    top: 50%;
+    margin-left: -190px;
+    margin-top: -143px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(10,5,5,.6);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.60),
+        inset 0 0 0 1px rgba(255,255,255,.05);
+    transition: opacity .35s ease;
+    cursor: pointer;
+    pointer-events: auto;
+    text-decoration: none;
+    display: block;
+}
+
+.hg-card:hover .hg-card-overlay {
+    opacity: 1;
+}
+
+.hg-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform .5s ease;
+}
+
+.hg-card:hover img {
+    transform: scale(1.04);
+}
+
+/* gradient footer */
+.hg-card-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 18px 18px;
+    background: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.5) 60%, transparent 100%);
+    color: #fff;
+    z-index: 2;
+}
+
+.hg-card-badge {
+    display: inline-block;
+    background: rgba(229,9,20,.85);
+    font-size: .62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    color: #fff;
+}
+
+.hg-card-name {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.22rem;
+    font-weight: 400;
+    color: #fff;
+    margin: 0 0 3px;
+    line-height: 1.25;
+}
+
+.hg-card-sub {
+    font-size: .74rem;
+    color: rgba(255,255,255,.6);
+    margin: 0;
+    font-weight: 400;
+}
+
+/* hover CTA overlay */
+.hg-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(229,9,20,.12);
+    border: 2px solid rgba(229,9,20,.35);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .25s ease;
+    z-index: 3;
+}
+
+.hg-card-cta {
+    background: rgba(229,9,20,.9);
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 9px 20px;
+    border-radius: 9999px;
+    backdrop-filter: blur(8px);
+}
+
+/* ── After-gallery CTA section ──────────────────────────────── */
+.hg-cta-section {
+    position: relative;
+    z-index: 20;
+    text-align: center;
+    padding: 80px 24px 90px;
+    background: #030303;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.hg-cta-section h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 14px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.hg-cta-section p {
+    color: rgba(255,255,255,.55);
+    font-size: clamp(.9rem, 1.5vw, 1rem);
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+}
+
+.hg-cta-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.hg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 9999px;
+    padding: 13px 28px;
+    font-size: .9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .22s ease;
+    cursor: pointer;
+}
+
+.hg-btn-primary {
+    background: linear-gradient(135deg, #E50914 0%, #B20710 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 20px rgba(229,9,20,.38);
+}
+
+.hg-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(229,9,20,.55);
+}
+
+.hg-btn-outline {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.15);
+    color: rgba(255,255,255,.88);
+    backdrop-filter: blur(10px);
+}
+
+.hg-btn-outline:hover {
+    background: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.28);
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes hgFadeIn {
+    from { opacity: 0; transform: translate(-50%,-50%) translateY(18px); }
+    to   { opacity: 1; transform: translate(-50%,-50%) translateY(0); }
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .hg-card { width: 300px; height: 225px; margin-left: -150px; margin-top: -113px; }
+}
+
+@media (max-width: 768px) {
+    .hg-scroll-wrapper { height: 400vh; }
+    .hg-card { width: 240px; height: 190px; margin-left: -120px; margin-top: -95px; }
+    .hg-title { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+    .hg-card { width: 180px; height: 142px; margin-left: -90px; margin-top: -71px; }
+}

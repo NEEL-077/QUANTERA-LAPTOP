@@ -1,0 +1,859 @@
+/* ============================================================
+   QUANTÉRA PRICING — Apple-inspired Design System
+   Typography: San Francisco stack | Colors: #f5f5f7 + #0071e3
+   Animation: cubic-bezier(0.25, 0.1, 0.25, 1) | 200–400ms
+   ============================================================ */
+
+/* ─── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Color tokens */
+  --bg-primary:       #f5f5f7;
+  --bg-card:          #ffffff;
+  --bg-card-hover:    #fafafa;
+  --accent:           #0071e3;
+  --accent-hover:     #0077ed;
+  --accent-glow:      rgba(0, 113, 227, 0.18);
+  --text-primary:     #1d1d1f;
+  --text-secondary:   #6e6e73;
+  --text-tertiary:    #aeaeb2;
+  --border:           #d2d2d7;
+  --border-active:    #0071e3;
+  --shadow-sm:        0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md:        0 8px 24px rgba(0,0,0,0.10);
+  --shadow-lg:        0 20px 48px rgba(0,0,0,0.14);
+  --shadow-glow:      0 0 0 4px rgba(0, 113, 227, 0.18);
+  --radius-sm:        10px;
+  --radius-md:        14px;
+  --radius-lg:        20px;
+  --radius-pill:      9999px;
+
+  /* Animation tokens */
+  --ease-apple:       cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast:         200ms;
+  --dur-base:         300ms;
+  --dur-slow:         400ms;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Back Navigation ───────────────────────────────────────── */
+.back-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(245,245,247,0.82);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 0 40px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.back-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: opacity var(--dur-fast) var(--ease-apple);
+}
+.back-nav a:hover { opacity: 0.7; }
+.back-nav-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ─── Page Layout ───────────────────────────────────────────── */
+.pricing-page {
+  padding-top: 52px; /* offset fixed nav */
+}
+
+.pricing-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.pricing-section + .pricing-section {
+  border-top: 1px solid var(--border);
+}
+
+/* ─── Section Headers ───────────────────────────────────────── */
+.section-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.section-heading {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.section-subheading {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.6;
+  margin-bottom: 52px;
+}
+
+/*
+  Apple-style split heading: "Storage. Choose your capacity."
+  The first word (bold, dark) is inside <strong>, the rest is
+  a separate <span> rendered in gray at same font size.
+*/
+.apple-heading {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 28px;
+}
+
+.apple-heading strong {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.apple-heading .apple-heading-sub {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* ─── ❶ STORAGE / PRICE SELECTION CARDS (Apple.com style) ──── */
+
+/*
+  Stacked full-width rows — exactly like apple.com/shop/buy-mac/macbook-pro.
+  Each card is a horizontal flex: left=name+desc, right=price+monthly.
+  NO side-by-side grid — cards stack vertically.
+*/
+.storage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 36px;
+  /* Rounded pill container — cards share a border */
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+/* Divider between cards (separator line, not a border on each card) */
+.storage-card + .storage-card {
+  border-top: 1px solid var(--border);
+}
+
+/* Core card — horizontal flex row */
+.storage-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 28px;
+  background: var(--bg-card);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  /* Smooth background + border highlight */
+  transition:
+    background     var(--dur-fast) var(--ease-apple),
+    border-color   var(--dur-fast) var(--ease-apple);
+}
+
+/* ── Hover: subtle tint */
+.storage-card:hover:not(.active) {
+  background: #fafafa;
+}
+
+/*
+  ── Active / selected:
+  Apple uses a blue border ring on the ENTIRE container when one option
+  is chosen, but since we share a border, we use an inset box-shadow 
+  to highlight just the selected card row without layout shift.
+*/
+.storage-card.active {
+  background: #f0f6ff;  /* very faint blue tint — Apple uses ~5% blue */
+}
+
+/* Selected state on the outer container — border turns blue */
+.storage-list:has(.storage-card.active) {
+  border-color: var(--border-active);
+  border-width: 2px;
+}
+
+/* ── Focus ring (keyboard accessibility) */
+.storage-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+  border-radius: 0;
+  z-index: 1;
+}
+
+/* First / last card get rounded corners matching the container */
+.storage-card:first-child { border-radius: 16px 16px 0 0; }
+.storage-card:last-child  { border-radius: 0 0 16px 16px; }
+.storage-card:only-child  { border-radius: 16px; }
+
+/* ── Left region: Model name + chip description */
+.storage-card-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.storage-label {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.storage-subtext {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  max-width: 340px;
+}
+
+/* ── Right region: price + monthly — right-aligned, like Apple */
+.storage-card-right {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.storage-price-from {
+  font-size: 13px;
+  color: var(--text-secondary);
+  /* "From" label sits on same line as price on wider screens */
+}
+
+.storage-price {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.storage-price-monthly {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/*
+  ── Selected radio dot (Apple uses a filled blue circle on the left
+     edge of the selected card, not a checkmark)
+*/
+.storage-radio-dot {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  margin-right: 4px;
+  transition:
+    border-color  var(--dur-fast) var(--ease-apple),
+    background    var(--dur-fast) var(--ease-apple);
+  position: relative;
+}
+
+/* Inner dot — fills in when active */
+.storage-radio-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.storage-card.active .storage-radio-dot {
+  border-color: var(--accent);
+  border-width: 2px;
+}
+
+.storage-card.active .storage-radio-dot::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── Responsive: stack price below name on very small screens */
+@media (max-width: 480px) {
+  .storage-card {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 18px 18px;
+  }
+  .storage-card-right { text-align: left; }
+}
+
+/* ─── ❷ PRODUCT CONFIGURATOR ───────────────────────────────── */
+.configurator-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .configurator-layout { grid-template-columns: 1fr; }
+}
+
+/* Option group */
+.option-group {
+  margin-bottom: 36px;
+}
+
+.option-group-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Option chip — Mac-style selector */
+.option-chip {
+  position: relative;
+  padding: 10px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition:
+    transform       var(--dur-fast)  var(--ease-apple),
+    box-shadow      var(--dur-fast)  var(--ease-apple),
+    border-color    var(--dur-fast)  var(--ease-apple),
+    color           var(--dur-fast)  var(--ease-apple),
+    background      var(--dur-fast)  var(--ease-apple);
+  outline: none;
+  user-select: none;
+}
+
+.option-chip:hover:not(.active) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: #9a9aa0;
+}
+
+.option-chip.active {
+  border: 2px solid var(--accent);
+  background: rgba(0, 113, 227, 0.06);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.12);
+}
+
+.option-chip:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.option-add-price {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-left: 4px;
+}
+
+/* ── Price Summary Card */
+.price-summary-card {
+  position: sticky;
+  top: 72px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.price-summary-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 22px;
+}
+
+.price-summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f2;
+}
+
+.price-summary-line:last-of-type { border-bottom: none; }
+
+.price-summary-line span:last-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.price-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1.5px solid var(--border);
+}
+
+.price-summary-total-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Animated total price — same pattern as storage section */
+.configurator-total {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  transition:
+    opacity   var(--dur-base) var(--ease-apple),
+    transform var(--dur-base) var(--ease-apple);
+}
+
+.configurator-total.animating-out {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.btn-configure {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-apple),
+              transform  var(--dur-fast) var(--ease-apple),
+              box-shadow var(--dur-fast) var(--ease-apple);
+  outline: none;
+}
+
+.btn-configure:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,113,227,0.30);
+}
+
+.btn-configure:active {
+  transform: scale(0.98);
+}
+
+.btn-configure:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* API status indicator */
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 14px;
+}
+.api-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #30d158;
+}
+.api-dot.loading {
+  background: #ff9f0a;
+  animation: pulse 0.8s infinite alternate;
+}
+@keyframes pulse {
+  from { opacity: 1; }
+  to   { opacity: 0.3; }
+}
+
+/* ─── ❸ SUBSCRIPTION TIERS ───────────────────────────────────── */
+
+/* ── Billing toggle */
+.billing-toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 52px;
+}
+
+.billing-toggle-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-apple);
+}
+
+.billing-toggle-label.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Apple-style pill toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  /* Smooth background transition */
+  transition: background var(--dur-base) var(--ease-apple);
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: var(--accent);
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+  /* Thumb slides smoothly */
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.toggle-switch input:checked ~ .toggle-thumb {
+  transform: translateX(22px);
+}
+
+.yearly-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #34c759, #30d158);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.04em;
+}
+
+/* ── Plans grid */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Plan card */
+.plan-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform       var(--dur-base) var(--ease-apple),
+    box-shadow      var(--dur-base) var(--ease-apple),
+    border-color    var(--dur-base) var(--ease-apple);
+}
+
+/* ── Hover: lift + shadow increase */
+.plan-card:hover:not(.selected) {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Selected: glow + border emphasis */
+.plan-card.selected {
+  border: 2px solid var(--border-active);
+  box-shadow: var(--shadow-glow), var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.plan-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Recommended badge */
+.plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,113,227,0.3);
+}
+
+/* ── Card content */
+.plan-tier {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.plan-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.plan-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
+
+/* ── Plan price with smooth transition */
+.plan-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.plan-currency {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.plan-price {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  /* Price number animates when billing toggle switches */
+  transition: opacity var(--dur-base) var(--ease-apple),
+              transform var(--dur-base) var(--ease-apple);
+}
+
+.plan-price.animating-out {
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+}
+
+.plan-period {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+/* ── Feature list */
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.plan-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.feature-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0,113,227,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.feature-icon.included { background: rgba(48,209,88,0.12); }
+.feature-icon svg { display: block; }
+
+.plan-cta {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--accent);
+  transition:
+    background   var(--dur-fast) var(--ease-apple),
+    border-color var(--dur-fast) var(--ease-apple),
+    color        var(--dur-fast) var(--ease-apple),
+    transform    var(--dur-fast) var(--ease-apple),
+    box-shadow   var(--dur-fast) var(--ease-apple);
+  outline: none;
+}
+
+.plan-card.selected .plan-cta,
+.plan-cta.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.plan-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,113,227,0.25);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.plan-cta:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Yearly saving badge under price */
+.plan-saving {
+  font-size: 12px;
+  font-weight: 600;
+  color: #30d158;
+  margin-top: -18px;
+  margin-bottom: 18px;
+  height: 16px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--dur-base) var(--ease-apple),
+              transform var(--dur-base) var(--ease-apple);
+}
+
+.plan-saving.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Page Footer spacer ────────────────────────────────────── */
+.pricing-footer {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+.pricing-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .pricing-section { padding: 60px 16px; }
+  .storage-grid { grid-template-columns: 1fr 1fr; }
+  .plans-grid { grid-template-columns: 1fr; }
+  .back-nav { padding: 0 20px; }
+  .price-display-strip { padding: 20px; }
+  .price-display-value { font-size: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

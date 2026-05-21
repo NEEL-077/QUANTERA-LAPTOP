@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantéra Admin | Add Laptop</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/alert.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- Tubelight Navbar (pill inside admin header) -->
+    <script src="js/navbar.js" defer></script>
+    <script src="js/notifications.js" defer></script>
+    <script src="js/dropdown.js" defer></script>
+    <!-- Favicon (uses T version) -->
+    <link id="favicon" rel="icon" type="image/png" href="images/Quantéra_T_logo_dark.png">
+    <style>
+        /* =========================================================
+           Admin Dashboard Overhaul Styles
+           ========================================================= */
+        :root {
+            --sidebar-width: 260px;
+            --header-height: 70px;
+            --dashboard-bg: #000000;
+            --sidebar-bg: #000000;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --text-primary: #fff;
+            --text-secondary: #aaa;
+        }
+
+        [data-theme="minimalistic"] {
+            --dashboard-bg: #f8f9fa;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.1);
+            --text-primary: #1a1a1a;
+            --text-secondary: #6c757d;
+        }
+
+        body {
+            background-color: var(--dashboard-bg);
+            margin: 0;
+            overflow: hidden;
+            /* Main scroll handles scroll */
+        }
+
+        /* ----- Layout Shell ----- */
+        .admin-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ----- Sidebar ----- */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: #000;
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .sidebar-brand img {
+            height: 30px;
+        }
+
+        .sidebar-nav {
+            padding: 24px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-link:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="minimalistic"] .sidebar-link:hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .sidebar-link.active {
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-accent));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        /* ----- Main Content Area ----- */
+        .admin-main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ----- Header ----- */
+        .admin-header {
+            height: var(--header-height);
+            background-color: var(--dashboard-bg);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            flex-shrink: 0;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 6px 16px;
+            width: 300px;
+        }
+
+        .header-search input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            outline: none;
+            padding: 6px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* ----- Content Scrollable Area ----- */
+        .admin-content {
+            flex-grow: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* ----- Dashboard Grid & Cards ----- */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .stat-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .chart-card h3 {
+            color: var(--text-primary);
+            margin: 0 0 20px 0;
+            font-size: 1.1rem;
+        }
+
+        /* --- Existing Form Layout Adaptations --- */
+        .section-header {
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        /* ── Premium Form Tabs ──────────────────────────────── */
+        .form-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+        }
+
+        .tab-btn {
+            padding: 9px 18px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: all 0.22s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(200, 150, 30, 0.15));
+            color: #d4af37;
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 14px rgba(212, 175, 55, 0.15);
+        }
+
+        /* ── Form Section Card ──────────────────────────────── */
+        .form-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.025);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-section.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 22px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* ── Input Group ────────────────────────────────────── */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            position: relative;
+        }
+
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            transition: color 0.2s;
+        }
+
+        .input-group:focus-within label {
+            color: #d4af37;
+        }
+
+        /* ── Inputs, Selects, Textareas ─────────────────────── */
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            padding: 11px 14px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Custom select arrow */
+        .input-group select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23d4af37' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        /* Option styling */
+        .input-group select option {
+            background: #1a1a22;
+            color: #fff;
+            padding: 10px;
+        }
+
+        /* Checkbox */
+        .input-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #d4af37;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 0;
+        }
+
+        /* File input */
+        .input-group input[type="file"] {
+            padding: 10px 14px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-group input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(200, 150, 30, 0.1));
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.2s;
+        }
+
+        .input-group input[type="file"]::file-selector-button:hover {
+            background: rgba(212, 175, 55, 0.3);
+        }
+
+        /* Focus states */
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            border-color: rgba(212, 175, 55, 0.65);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), 0 4px 20px rgba(212, 175, 55, 0.08);
+            background: rgba(212, 175, 55, 0.04);
+        }
+
+        /* Hover states */
+        .input-group input:hover:not(:focus),
+        .input-group select:hover:not(:focus),
+        .input-group textarea:hover:not(:focus) {
+            border-color: rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Light theme overrides */
+        [data-theme="minimalistic"] .input-group input,
+        [data-theme="minimalistic"] .input-group select,
+        [data-theme="minimalistic"] .input-group textarea {
+            background: #fff;
+            border-color: #e0e0e0;
+            color: #1a1a1a;
+        }
+
+        [data-theme="minimalistic"] .input-group label {
+            color: #666;
+        }
+
+        /* ── Submit Button ──────────────────────────────────── */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #d4af37, #c8961e, #d4af37);
+            background-size: 200% auto;
+            border: none;
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 60px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.35s ease;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover {
+            background-position: right center;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Order Table Adaptations */
+        #ordersTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #ordersTable th {
+            padding: 16px;
+            text-align: left;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 2px solid var(--card-border);
+        }
+
+        #ordersTable td {
+            padding: 16px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        #ordersTable tbody tr:hover {
+            background: var(--card-bg);
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .status-processing {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
+            border: 1px solid #17a2b8;
+        }
+
+        .status-shipped {
+            background: rgba(0, 123, 255, 0.2);
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+
+        .status-delivered {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .status-cancelled {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        /* =========================================================
+           Brand-Grouped Inventory Styles
+           ========================================================= */
+        .brand-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--card-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .brand-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .brand-header.collapsed {
+            border-bottom: none;
+        }
+
+        .brand-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 0.9rem;
+        }
+
+        .brand-details h3 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .brand-details .brand-stats {
+            margin: 2px 0 0 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .brand-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .brand-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .brand-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .brand-products {
+            padding: 0;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .brand-products.collapsed {
+            max-height: 0;
+            padding: 0;
+        }
+
+        .product-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--card-border);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .product-specs {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .product-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .edit-btn {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        .edit-btn:hover {
+            background: #00d4ff;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .delete-btn:hover {
+            background: #ff6666;
+            transform: translateY(-1px);
+        }
+
+        .empty-brand {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Search highlight */
+        .search-highlight {
+            background: rgba(255, 235, 59, 0.3);
+            color: #fff;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+
+        /* Responsive Design for Brand Inventory */
+        @media (max-width: 768px) {
+            .brand-header {
+                padding: 12px 16px;
+            }
+
+            .brand-logo {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+
+            .brand-details h3 {
+                font-size: 1rem;
+            }
+
+            .brand-details .brand-stats {
+                font-size: 0.8rem;
+            }
+
+            .product-item {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .product-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .product-specs {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .action-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-actions {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* =========================================================
+           3-Layer Inventory Drilldown: Brand → Series → Product Grid
+           ========================================================= */
+        .inv-breadcrumb {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        /* --- Brand Card Grid --- */
+        .inv-brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 18px;
+        }
+
+        .inv-brand-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 22px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inv-brand-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-accent));
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .inv-brand-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 229, 255, 0.5);
+            box-shadow: 0 14px 44px rgba(0, 229, 255, 0.12);
+        }
+
+        .inv-brand-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Logo wrapper — white pill background so logos render on dark bg */
+        .inv-brand-card__logo-wrap {
+            width: 90px;
+            height: 60px;
+            background: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .inv-brand-card__logo-img {
+            max-width: 100%;
+            max-height: 44px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .inv-brand-card__avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #000;
+        }
+
+        .inv-brand-card__name {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .inv-brand-card__arrow {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            color: var(--accent-color);
+            opacity: 0;
+            font-size: 1rem;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .inv-brand-card:hover .inv-brand-card__arrow {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+
+        /* --- Brand Hero Header --- */
+        .inv-brand-header {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .inv-brand-header__avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .inv-brand-header__name {
+            color: var(--text-primary);
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin: 0 0 3px 0;
+        }
+
+        .inv-brand-header__sub {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* --- Series Card Grid --- */
+        .inv-series-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+            gap: 14px;
+        }
+
+        .inv-series-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .inv-series-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 229, 255, 0.5);
+            background: rgba(0, 229, 255, 0.04);
+            box-shadow: 0 8px 28px rgba(0, 229, 255, 0.08);
+        }
+
+        .inv-series-card.all-products {
+            border: 1px dashed rgba(0, 229, 255, 0.4);
+            background: rgba(0, 229, 255, 0.02);
+        }
+
+        .inv-series-card__icon {
+            font-size: 1.6rem;
+        }
+
+        .inv-series-card__name {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .inv-series-card__count {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* --- Product Card Grid --- */
+        .inv-product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+            gap: 18px;
+        }
+
+        .inv-product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+        }
+
+        .inv-product-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 14px 44px rgba(0, 0, 0, 0.35);
+        }
+
+        .inv-product-card__img {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.07), rgba(157, 0, 255, 0.07));
+            border-bottom: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inv-product-card__img img {
+            max-height: 135px;
+            max-width: 90%;
+            object-fit: contain;
+        }
+
+        .inv-product-card__img .img-placeholder {
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        .inv-product-card__badge-row {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .inv-product-card__body {
+            padding: 14px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .inv-product-card__series {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-color);
+        }
+
+        .inv-product-card__name {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.92rem;
+            margin: 0;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .inv-product-card__specs {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 6px;
+        }
+
+        .inv-product-card__spec {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+        }
+
+        .inv-product-card__price {
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-top: auto;
+            padding-top: 10px;
+        }
+
+        .inv-product-card__footer {
+            padding: 10px 14px;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            gap: 8px;
+        }
+
+        .inv-product-card__footer .edit-btn,
+        .inv-product-card__footer .delete-btn {
+            flex: 1;
+            padding: 7px 10px;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border-radius: 7px;
+        }
+
+        /* Stock & Type Badges */
+        .inv-stock-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .inv-stock-in {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.4);
+        }
+
+        .inv-stock-low {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.4);
+        }
+
+        .inv-stock-out {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.4);
+        }
+
+        .inv-type-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .inv-section-header {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .inv-section-header h2 {
+            margin: 0 0 2px 0;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .inv-section-header p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 768px) {
+            .inv-brand-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .inv-series-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .inv-product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="admin-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img id="logo-img" src="images/Quantera.png" alt="Quantéra"></a>
+            </div>
+
+            <div class="sidebar-nav">
+                <button class="sidebar-link active" data-mode="dashboard">
+                    📊 Dashboard Overview
+                </button>
+                <div
+                    style="margin: 16px 0 8px 16px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
+                    Inventory Management
+                </div>
+                <button class="sidebar-link" data-mode="laptop">
+                    💻 Add New Laptop
+                </button>
+                <button class="sidebar-link" data-mode="accessory">
+                    🎧 Add New Accessory
+                </button>
+                <button class="sidebar-link" data-mode="inventory">
+                    📦 View Inventory Products
+                </button>
+                <div
+                    style="margin: 16px 0 8px 16px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
+                    Sales & Customers
+                </div>
+                <button class="sidebar-link" data-mode="orders">
+                    🛒 Order Management
+                </button>
+                <div
+                    style="margin: 16px 0 8px 16px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
+                    Marketing & Logs
+                </div>
+                <button class="sidebar-link" data-mode="newsletter">
+                    📧 Newsletters
+                </button>
+                <button class="sidebar-link" data-mode="emailLogs">
+                    📜 Email Audit Logs
+                </button>
+            </div>
+
+            <div style="padding: 24px; border-top: 1px solid var(--card-border);">
+                <button onclick="window.location.href='/'" class="sidebar-link" style="color: var(--text-secondary);">
+                    ⬅️ Back to Store
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="header-search">
+                    <span style="color: var(--text-secondary);">🔍</span>
+                    <input type="text" placeholder="Search orders, products, users...">
+                </div>
+
+                <!-- Admin Tubelight Pill -->
+                <div class="tl-pill" style="position:relative;">
+                    <a href="/" class="tl-link">
+                        <span class="tl-label">🏠 Store</span>
+                        <span class="tl-icon">🏠</span>
+                    </a>
+                    <a href="/admin" class="tl-link tl-active">
+                        <span class="tl-lamp"></span>
+                        <span class="tl-label">📊 Dashboard</span>
+                        <span class="tl-icon">📊</span>
+                    </a>
+                    <a href="/order-tracking" class="tl-link">
+                        <span class="tl-label">📦 Track</span>
+                        <span class="tl-icon">📦</span>
+                    </a>
+                </div>
+
+                <div class="header-actions">
+                    <button id="theme-toggle" class="theme-btn admin-theme-btn" aria-label="Toggle Theme"
+                        style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">🌙</button>
+                    <div style="width: 1px; height: 24px; background: var(--card-border);"></div>
+                    <div class="admin-profile">
+                        <div class="admin-avatar">AD</div>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Pages Container -->
+            <div class="admin-content">
+
+                <!-- DASHBOARD OVERVIEW CONTAINER -->
+                <div id="dashboardContainer">
+                    <h1 class="section-header">Dashboard Overview</h1>
+
+                    <!-- KPI Cards -->
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-title">Total Revenue</div>
+                            <div class="stat-value" id="statRevenue">₹0.00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Total Orders</div>
+                            <div class="stat-value" id="statOrders">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Active Inventory</div>
+                            <div class="stat-value" id="statProducts">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title" style="color: #ffc107;">Pending Orders</div>
+                            <div class="stat-value" id="statPending">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Revenue Overview (Last 7 Days)</h3>
+                            <div style="position: relative; height: 300px; width: 100%;">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Orders by Status</h3>
+                            <div style="position: relative; height: 300px; width: 100%;">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Snippet -->
+                    <div class="chart-card">
+                        <h3>Recent Orders</h3>
+                        <div style="overflow-x: auto;">
+                            <table id="recentOrdersTable" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            style="padding: 12px; text-align: left; color: var(--text-secondary); border-bottom: 1px solid var(--card-border);">
+                                            Order ID</th>
+                                        <th
+                                            style="padding: 12px; text-align: left; color: var(--text-secondary); border-bottom: 1px solid var(--card-border);">
+                                            Customer</th>
+                                        <th
+                                            style="padding: 12px; text-align: left; color: var(--text-secondary); border-bottom: 1px solid var(--card-border);">
+                                            Amount</th>
+                                        <th
+                                            style="padding: 12px; text-align: left; color: var(--text-secondary); border-bottom: 1px solid var(--card-border);">
+                                            Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersBody">
+                                    <tr>
+                                        <td colspan="4"
+                                            style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                                            Loading recent activity...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ORDERS CONTAINER -->
+                <div id="ordersContainer" style="display: none;">
+                    <h1 class="section-header">Order Management</h1>
+                    <h2 style="margin-bottom: 20px; color: #fff;">Order Management</h2>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div class="input-group" style="flex: 1; min-width: 200px;">
+                            <label>Filter by Status</label>
+                            <select id="orderStatusFilter" style="max-width: 100%;">
+                                <option value="all">All Orders</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="flex: 2; min-width: 250px;">
+                            <label>Search Orders</label>
+                            <input type="text" id="orderSearch" placeholder="Search by Order ID or Customer Name..."
+                                style="width: 100%;">
+                        </div>
+                    </div>
+
+                    <!-- Orders Table -->
+                    <div
+                        style="background: rgba(255,255,255,0.03); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                        <table id="ordersTable" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr
+                                    style="background: rgba(255,255,255,0.05); border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                    <th
+                                        style="padding: 15px; text-align: left; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                                        Order ID</th>
+                                    <th
+                                        style="padding: 15px; text-align: left; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                                        Customer</th>
+                                    <th
+                                        style="padding: 15px; text-align: left; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                                        Products</th>
+                                    <th
+                                        style="padding: 15px; text-align: left; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                                        Total</th>
+                                    <th
+                                        style="padding: 15px; text-align: left; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                                        Status</th>
+                                    <th
+                                        style="padding: 15px; text-align: left; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr>
+                                    <td colspan="6" style="padding: 40px; text-align: center; color: #aaa;">Loading
+                                        orders...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Order Details Modal -->
+                    <div id="orderDetailsModal"
+                        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto; padding: 20px;">
+                        <div
+                            style="max-width: 800px; margin: 50px auto; background: rgba(20,20,20,0.95); padding: 30px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2 style="color: var(--accent-color); margin: 0;">Order Details</h2>
+                                <button id="closeOrderDetails"
+                                    style="background: #ff4444; border: none; color: #fff; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: 600;">✕
+                                    Close</button>
+                            </div>
+                            <div id="orderDetailsContent">
+                                <!-- Order details will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INVENTORY CONTAINER -->
+                <div id="inventoryContainer" style="display: none;">
+
+                    <!-- Header + Breadcrumb -->
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h1 class="section-header" style="margin-bottom: 5px;">Inventory Management</h1>
+                            <div id="inv-breadcrumb" class="inv-breadcrumb">
+                                <span style="color: var(--text-primary); font-weight: 600;">All Brands</span>
+                            </div>
+                        </div>
+                        <div id="inventoryStats"
+                            style="color: var(--text-secondary); font-size: 0.9rem; text-align: right;"></div>
+                    </div>
+
+                    <!-- Filter Controls (always visible) -->
+                    <div style="display: flex; gap: 15px; margin-bottom: 24px; flex-wrap: wrap; align-items: flex-end;">
+                        <div class="input-group" style="min-width: 150px;">
+                            <label>Product Type</label>
+                            <select id="inventoryFilter" style="max-width: 200px;">
+                                <option value="all">All Products</option>
+                                <option value="laptops">Laptops Only</option>
+                                <option value="accessories">Accessories Only</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="min-width: 260px; flex: 1;">
+                            <label>Search Products</label>
+                            <input type="text" id="inventorySearch"
+                                placeholder="Search across all brands, series, specs..." style="width: 100%;">
+                        </div>
+                    </div>
+
+                    <!-- Layer 1: Brand Card Grid (default) -->
+                    <div id="inv-brand-view">
+                        <div id="inv-brand-grid" class="inv-brand-grid">
+                            <p style="color: #aaa; grid-column: 1/-1;">Loading brands...</p>
+                        </div>
+                    </div>
+
+                    <!-- Layer 2: Series Card Grid (hidden) -->
+                    <div id="inv-series-view" style="display: none;">
+                        <div id="inv-brand-header" class="inv-brand-header"></div>
+                        <div id="inv-series-grid" class="inv-series-grid"></div>
+                    </div>
+
+                    <!-- Layer 3: Product Card Grid (hidden) -->
+                    <div id="inv-product-view" style="display: none;">
+                        <div id="inv-series-header"></div>
+                        <div id="inv-product-grid" class="inv-product-grid"></div>
+                    </div>
+
+                </div>
+
+                <!-- LAPTOP FORM CONTAINER -->
+                <div id="laptopContainer">
+                    <h2 style="margin-bottom: 20px; color: var(--accent-color);">New Laptop Entry</h2>
+                    <form id="laptopForm">
+                        <!-- Tabs -->
+                        <div class="form-tabs">
+                            <div class="tab-btn active" data-target="general">1. General</div>
+                            <div class="tab-btn" data-target="design">2. Design</div>
+                            <div class="tab-btn" data-target="display">3. Display</div>
+                            <div class="tab-btn" data-target="cpu">4. CPU</div>
+                            <div class="tab-btn" data-target="gpu">5. GPU</div>
+                            <div class="tab-btn" data-target="ram">6. RAM</div>
+                            <div class="tab-btn" data-target="storage">7. Storage</div>
+                            <div class="tab-btn" data-target="connectivity">8. Connect</div>
+                            <div class="tab-btn" data-target="multimedia">9. Media</div>
+                            <div class="tab-btn" data-target="input">10. Input</div>
+                            <div class="tab-btn" data-target="power">11. Power</div>
+                            <div class="tab-btn" data-target="software">12. Other</div>
+                        </div>
+
+                        <!-- 1. General -->
+                        <div id="general" class="form-section active">
+                            <div class="input-group">
+                                <label>Brand</label>
+                                <select name="brand">
+                                    <option value="ASUS">ASUS</option>
+                                    <option value="Dell">Dell</option>
+                                    <option value="HP">HP</option>
+                                    <option value="Acer">Acer</option>
+                                    <option value="Lenovo">Lenovo</option>
+                                    <option value="MSI">MSI</option>
+                                    <option value="Razer">Razer</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="LG">LG</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Category *</label>
+                                <select name="category" required>
+                                    <option value="gaming">Gaming</option>
+                                    <option value="business">Business</option>
+                                    <option value="student">Student</option>
+                                    <option value="professional">Professional</option>
+                                    <option value="creator">Creator</option>
+                                    <option value="ultrabook">Ultrabook</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Series *</label><input type="text" name="series"
+                                    placeholder="e.g. ROG Zephyrus" required></div>
+                            <div class="input-group"><label>Model Number *</label><input type="text" name="modelNumber"
+                                    placeholder="e.g. G14 GA401" required></div>
+                            <div class="input-group"><label>SKU</label><input type="text" name="sku"></div>
+                            <div class="input-group"><label>Launch Year</label><input type="number" name="launchYear"
+                                    value="2026" min="2022" max="2030">
+                            </div>
+                            <div class="input-group"><label>Base Price (₹) *</label><input type="number" name="price"
+                                    required>
+                            </div>
+                            <div class="input-group">
+                                <label>Discount Price (₹)</label>
+                                <input type="number" name="discountPrice">
+                            </div>
+                            <div class="input-group">
+                                <label>Stock Qty</label>
+                                <input type="number" name="stock" value="25">
+                            </div>
+                            <div class="input-group full-width">
+                                <label>Product Images (Multiple)</label>
+                                <input type="file" id="laptopImages" name="images"
+                                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/svg+xml,image/bmp"
+                                    multiple>
+                                <small style="color: rgba(255,255,255,0.5); margin-top: 5px; display: block;">
+                                    Supported formats: JPG, PNG, GIF, WEBP, SVG, BMP (Max 10 images, 10MB each)
+                                </small>
+                            </div>
+                            <div class="input-group full-width" id="imagePreviewContainer" style="display: none;">
+                                <label>Selected Images Preview</label>
+                                <div id="imagePreview"
+                                    style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                                </div>
+                            </div>
+                            
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: DESIGN <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Design -->
+                        <div id="design" class="form-section">
+                            <div class="input-group"><label>Chassis Material</label><input type="text" name="material"
+                                    placeholder="e.g. CNC Aluminum"></div>
+                            <div class="input-group"><label>Color</label><input type="text" name="color"></div>
+                            <div class="input-group"><label>Weight (kg)</label><input type="number" step="0.01"
+                                    name="weight">
+                            </div>
+                            <div class="input-group"><label>Dimensions (WxDxH mm)</label><input type="text"
+                                    name="dimensions">
+                            </div>
+                            <div class="input-group"><label>Hinge Type</label>
+                                <select name="hinge">
+                                    <option value="Standard">Standard</option>
+                                    <option value="180 Degree">180 Degree</option>
+                                    <option value="360 Degree (2-in-1)">360 Degree (2-in-1)</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Military Grade?</label><input type="checkbox" name="milStd">
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: DISPLAY <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3. Display -->
+                        <div id="display" class="form-section">
+                            <div class="input-group"><label>Size (inch)</label><input type="number" step="0.1"
+                                    name="displaySize" list="dl-displaySize">
+                                <datalist id="dl-displaySize">
+                                    <option value="13.3">
+                                    <option value="13.6">
+                                    <option value="14">
+                                    <option value="14.5">
+                                    <option value="15.6">
+                                    <option value="16">
+                                    <option value="16.1">
+                                    <option value="17.3">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Resolution</label><input type="text" name="resolution"
+                                    placeholder="e.g. 2560x1600" list="dl-resolution">
+                                <datalist id="dl-resolution">
+                                    <option value="1920x1080">FHD</option>
+                                    <option value="2560x1440">QHD</option>
+                                    <option value="2560x1600">QHD+</option>
+                                    <option value="2880x1800">3K</option>
+                                    <option value="3840x2160">4K UHD</option>
+                                    <option value="1920x1200">WUXGA</option>
+                                    <option value="1366x768">HD</option>
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Aspect Ratio</label><input type="text" name="aspectRatio"
+                                    placeholder="16:10" list="dl-aspectRatio">
+                                <datalist id="dl-aspectRatio">
+                                    <option value="16:9">
+                                    <option value="16:10">
+                                    <option value="3:2">
+                                    <option value="21:9">
+                                    <option value="4:3">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Panel Type</label>
+                                <select name="panelType">
+                                    <option value="IPS">IPS</option>
+                                    <option value="OLED">OLED</option>
+                                    <option value="Mini-LED">Mini-LED</option>
+                                    <option value="TN">TN</option>
+                                    <option value="VA">VA</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Refresh Rate (Hz)</label><input type="number"
+                                    name="refreshRate" list="dl-refreshRate">
+                                <datalist id="dl-refreshRate">
+                                    <option value="60">
+                                    <option value="90">
+                                    <option value="120">
+                                    <option value="144">
+                                    <option value="165">
+                                    <option value="240">
+                                    <option value="360">
+                                    <option value="500">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Response Time (ms)</label><input type="number" step="0.1"
+                                    name="responseTime" list="dl-responseTime">
+                                <datalist id="dl-responseTime">
+                                    <option value="0.2">
+                                    <option value="1">
+                                    <option value="3">
+                                    <option value="5">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Brightness (nits)</label><input type="number"
+                                    name="brightness" list="dl-brightness">
+                                <datalist id="dl-brightness">
+                                    <option value="250">
+                                    <option value="300">
+                                    <option value="400">
+                                    <option value="500">
+                                    <option value="600">
+                                    <option value="1000">
+                                    <option value="1200">
+                                    <option value="1600">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Color Gamut</label><input type="text" name="colorGamut"
+                                    placeholder="100% DCI-P3" list="dl-colorGamut">
+                                <datalist id="dl-colorGamut">
+                                    <option value="100% DCI-P3">
+                                    <option value="100% sRGB">
+                                    <option value="90% DCI-P3">
+                                    <option value="99% sRGB">
+                                    <option value="72% NTSC">
+                                    <option value="45% NTSC">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Touchscreen?</label><input type="checkbox"
+                                    name="touchscreen"></div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: CPU <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 4. CPU -->
+                        <div id="cpu" class="form-section">
+                            <div class="input-group"><label>Brand</label><select name="cpuBrand">
+                                    <option>Intel</option>
+                                    <option>AMD</option>
+                                    <option>Apple</option>
+                                </select></div>
+                            <div class="input-group"><label>Full Model Name</label><input type="text" name="cpuModel"
+                                    placeholder="e.g. Core Ultra 9 285HX" list="dl-cpuModel">
+                                <datalist id="dl-cpuModel">
+                                    <!-- Intel Core Ultra 2 (2025) -->
+                                    <option value="Core Ultra 9 285HX">
+                                    <option value="Core Ultra 9 275HX">
+                                    <option value="Core Ultra 7 265HX">
+                                    <option value="Core Ultra 7 255HX">
+                                    <option value="Core Ultra 5 245HX">
+                                    <option value="Core Ultra 5 235HX">
+                                    <option value="Core Ultra 9 285H">
+                                    <option value="Core Ultra 7 265H">
+                                    <option value="Core Ultra 5 245H">
+                                    <option value="Core Ultra 7 258V">
+                                    <option value="Core Ultra 5 238V">
+                                        <!-- Intel 14th Gen -->
+                                    <option value="i9-14900HX">
+                                    <option value="i7-14700HX">
+                                    <option value="i5-14500HX">
+                                        <!-- AMD Ryzen AI 300 -->
+                                    <option value="Ryzen AI 9 HX 370">
+                                    <option value="Ryzen AI 9 365">
+                                    <option value="Ryzen AI 7 350">
+                                    <option value="Ryzen 9 7945HX">
+                                    <option value="Ryzen 7 7745HX">
+                                    <option value="Ryzen 5 7535HS">
+                                        <!-- Apple -->
+                                    <option value="M5 Max">
+                                    <option value="M5 Pro">
+                                    <option value="M5">
+                                    <option value="M4 Max">
+                                    <option value="M4 Pro">
+                                    <option value="M4">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Total Cores</label><input type="number" name="cpuCores"
+                                    list="dl-cpuCores">
+                                <datalist id="dl-cpuCores">
+                                    <option value="4">
+                                    <option value="6">
+                                    <option value="8">
+                                    <option value="10">
+                                    <option value="12">
+                                    <option value="14">
+                                    <option value="16">
+                                    <option value="24">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>P-Cores</label><input type="number" name="pCores"></div>
+                            <div class="input-group"><label>E-Cores</label><input type="number" name="eCores"></div>
+                            <div class="input-group"><label>Threads</label><input type="number" name="threads"
+                                    list="dl-threads">
+                                <datalist id="dl-threads">
+                                    <option value="8">
+                                    <option value="12">
+                                    <option value="16">
+                                    <option value="20">
+                                    <option value="24">
+                                    <option value="28">
+                                    <option value="32">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Base Clock (GHz)</label><input type="number" step="0.1"
+                                    name="baseClock" list="dl-baseClock">
+                                <datalist id="dl-baseClock">
+                                    <option value="1.3">
+                                    <option value="1.5">
+                                    <option value="1.8">
+                                    <option value="2.0">
+                                    <option value="2.4">
+                                    <option value="2.6">
+                                    <option value="3.0">
+                                    <option value="3.5">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Boost Clock (GHz)</label><input type="number" step="0.1"
+                                    name="boostClock" list="dl-boostClock">
+                                <datalist id="dl-boostClock">
+                                    <option value="4.0">
+                                    <option value="4.5">
+                                    <option value="4.8">
+                                    <option value="5.0">
+                                    <option value="5.2">
+                                    <option value="5.4">
+                                    <option value="5.6">
+                                    <option value="5.9">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Cache (MB)</label><input type="number" name="cache"
+                                    list="dl-cache">
+                                <datalist id="dl-cache">
+                                    <option value="8">
+                                    <option value="12">
+                                    <option value="16">
+                                    <option value="24">
+                                    <option value="32">
+                                    <option value="36">
+                                    <option value="40">
+                                    <option value="64">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>NPU (TOPS)</label><input type="number" name="npu"
+                                    list="dl-npu">
+                                <datalist id="dl-npu">
+                                    <option value="11">
+                                    <option value="13">
+                                    <option value="34">
+                                    <option value="38">
+                                    <option value="40">
+                                    <option value="48">
+                                    <option value="67">
+                                    <option value="100">
+                                </datalist>
+                            </div>
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: GPU <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 5. GPU -->
+                        <div id="gpu" class="form-section">
+                            <div class="input-group"><label>Type</label><select name="gpuType">
+                                    <option>Dedicated</option>
+                                    <option>Integrated</option>
+                                </select></div>
+                            <div class="input-group"><label>Model</label><input type="text" name="gpuModel"
+                                    placeholder="e.g. RTX 5080" list="dl-gpuModel">
+                                <datalist id="dl-gpuModel">
+                                    <!-- NVIDIA RTX 50 series (2025) -->
+                                    <option value="RTX 5090">
+                                    <option value="RTX 5080">
+                                    <option value="RTX 5070 Ti">
+                                    <option value="RTX 5070">
+                                    <option value="RTX 5060">
+                                    <option value="RTX 5050">
+
+                                        <!-- NVIDIA RTX 40 series -->
+                                    <option value="RTX 4090">
+                                    <option value="RTX 4080">
+                                    <option value="RTX 4070 Ti SUPER">
+                                    <option value="RTX 4070 Ti">
+                                    <option value="RTX 4070 SUPER">
+                                    <option value="RTX 4070">
+                                    <option value="RTX 4060 Ti">
+                                    <option value="RTX 4060">
+                                    <option value="RTX 4050">
+                                        <!-- AMD RX 7000 -->
+                                    <option value="RX 7900 XTX">
+                                    <option value="RX 7900 XT">
+                                    <option value="RX 7800 XT">
+                                    <option value="RX 7700 XT">
+                                    <option value="RX 7600">
+                                        <!-- Integrated -->
+                                    <option value="Intel Arc Graphics">
+                                    <option value="Intel Iris Xe">
+                                    <option value="AMD Radeon 890M">
+                                    <option value="AMD Radeon 780M">
+                                    <option value="Apple M5 GPU">
+                                    <option value="Apple M4 GPU">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>VRAM (GB)</label><input type="number" name="vram"
+                                    list="dl-vram">
+                                <datalist id="dl-vram">
+                                    <option value="4">
+                                    <option value="6">
+                                    <option value="8">
+                                    <option value="10">
+                                    <option value="12">
+                                    <option value="16">
+                                    <option value="24">
+                                    <option value="32">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>TGP (W)</label><input type="number" name="tgp"
+                                    list="dl-tgp">
+                                <datalist id="dl-tgp">
+                                    <option value="35">
+                                    <option value="60">
+                                    <option value="80">
+                                    <option value="100">
+                                    <option value="115">
+                                    <option value="130">
+                                    <option value="150">
+                                    <option value="175">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>MUX Switch?</label><input type="checkbox" name="muxSwitch">
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: RAM <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 6. Memory -->
+                        <div id="ram" class="form-section">
+                            <div class="input-group">
+                                <label>Capacity (GB) *</label>
+                                <select name="ramCapacity" required>
+                                    <option value="16" selected>16 GB</option>
+                                    <option value="32">32 GB</option>
+                                    <option value="64">64 GB</option>
+                                    <option value="128">128 GB</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Type *</label>
+                                <select name="ramType" required>
+                                    <option value="DDR5" selected>DDR5</option>
+                                    <option value="LPDDR5">LPDDR5</option>
+                                    <option value="LPDDR5">LPDDR5x</option>
+                                    <option value="Unified Memory">Unified Memory (Apple)</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Speed</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="number" name="ramSpeed" placeholder="Value" style="flex: 1;">
+                                    <select name="ramSpeedUnit" style="width: 100px;">
+                                        <option value="MHz">MHz</option>
+                                        <option value="MT/s">MT/s</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group"><label>Slots</label><input type="text" name="ramSlots"
+                                    placeholder="2x SO-DIMM"></div>
+                            <div class="input-group"><label>Max Supported (GB)</label><input type="number"
+                                    name="maxRam"></div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: STORAGE <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 7. Storage -->
+                        <div id="storage" class="form-section">
+                            <div class="input-group">
+                                <label>Primary Capacity (GB) *</label>
+                                <select name="storageCap" required>
+                                    <option value="512">512 GB</option>
+                                    <option value="1024" selected>1 TB (1024 GB)</option>
+                                    <option value="2048">2 TB (2048 GB)</option>
+                                    <option value="4096">4 TB (4096 GB)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Type *</label>
+                                <select name="storageType" required>
+                                    <option value="NVMe PCIe 5.0" selected>NVMe PCIe 5.0</option>
+                                    <option value="NVMe PCIe 4.0" selected>NVMe PCIe 4.0</option>
+                                    <option value="NVMe Gen4">NVMe Gen4</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Extra Slots</label><input type="number" name="extraSlots">
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: CONNECTIVITY <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 8. Connectivity -->
+                        <div id="connectivity" class="form-section">
+                            <div class="input-group"><label>Wi-Fi</label><input type="text" name="wifi"
+                                    placeholder="Wi-Fi 7" list="dl-wifi">
+                                <datalist id="dl-wifi">
+                                    <option value="Wi-Fi 7 (802.11be)">
+                                    <option value="Wi-Fi 6E (802.11ax)">
+                                    <option value="Wi-Fi 6 (802.11ax)">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Bluetooth</label><input type="text" name="bluetooth"
+                                    placeholder="v5.4" list="dl-bluetooth">
+                                <datalist id="dl-bluetooth">
+                                    <option value="6.2">
+                                    <option value="6.1">
+                                    <option value="6.0">
+                                    <option value="5.4">
+                                </datalist>
+                            </div>
+                            <div class="input-group full-width"><label>Ports List</label><textarea name="ports" rows="3"
+                                    placeholder="e.g. 2x USB-C Thunderbolt 4, 2x USB-A 3.2, 1x HDMI 2.1, 1x SD Card, 1x 3.5mm"></textarea>
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: MULTIMEDIA <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 9. Multimedia -->
+                        <div id="multimedia" class="form-section">
+                            <div class="input-group"><label>Webcam</label><input type="text" name="webcam"
+                                    placeholder="1080p IR" list="dl-webcam">
+                                <datalist id="dl-webcam">
+                                    <option value="FHD 1080p IR">
+                                    <option value="FHD 1080p">
+                                    <option value="4K IR">
+                                    <option value="720p HD">
+                                    <option value="Windows Hello IR">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Speakers</label><input type="text" name="speakers"
+                                    placeholder="4x with Dolby Atmos" list="dl-speakers">
+                                <datalist id="dl-speakers">
+                                    <option value="2x 2W Stereo">
+                                    <option value="4x 2W Dolby Atmos">
+                                    <option value="4x 4W Harman Kardon">
+                                    <option value="4x 2W Bang &amp; Olufsen">
+                                    <option value="2x 4W DTS:X">
+                                    <option value="6x Bang &amp; Olufsen">
+                                </datalist>
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: INPUT <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 10. Input -->
+                        <div id="input" class="form-section">
+                            <div class="input-group"><label>Keyboard Backlight</label><input type="text" name="keyboard"
+                                    placeholder="Per-Key RGB" list="dl-keyboard">
+                                <datalist id="dl-keyboard">
+                                    <option value="Per-Key RGB">
+                                    <option value="4-Zone RGB">
+                                    <option value="RGB Backlit">
+                                    <option value="White Backlit">
+                                    <option value="No Backlight">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Touchpad</label><input type="text" name="touchpad"
+                                    list="dl-touchpad">
+                                <datalist id="dl-touchpad">
+                                    <option value="Glass Precision Touchpad">
+                                    <option value="Multi-touch Precision">
+                                    <option value="Microsoft Precision">
+                                    <option value="NumberPad">
+                                    <option value="Glass Haptic">
+                                </datalist>
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: POWER <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 11. Power -->
+                        <div id="power" class="form-section">
+                            <div class="input-group"><label>Battery (Wh)</label><input type="number" name="battery"
+                                    list="dl-battery">
+                                <datalist id="dl-battery">
+                                    <option value="60">
+                                    <option value="72">
+                                    <option value="80">
+                                    <option value="86">
+                                    <option value="90">
+                                    <option value="99">
+                                    <option value="120">
+                                </datalist>
+                            </div>
+                            <div class="input-group"><label>Adapter (W)</label><input type="number" name="adapter"
+                                    list="dl-adapter">
+                                <datalist id="dl-adapter">
+                                    <option value="65">
+                                    <option value="90">
+                                    <option value="100">
+                                    <option value="130">
+                                    <option value="140">
+                                    <option value="180">
+                                    <option value="230">
+                                    <option value="280">
+                                    <option value="300">
+                                    <option value="380">
+                                    <option value="450">
+
+                                </datalist>
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="full-width" style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="next-tab-btn" style="padding: 12px 24px; background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s;">
+                                    NEXT: SOFTWARE/WARRANTY <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 12. Software -->
+                        <div id="software" class="form-section">
+                            <div class="input-group"><label>OS</label><input type="text" name="os"
+                                    value="Windows 11 Home">
+                            </div>
+                            <div class="input-group"><label>Warranty</label><input type="text" name="warranty"
+                                    placeholder="1 Year On-site"></div>
+                            <div class="input-group full-width">
+                                <label>Description (Q&amp;A Format)</label>
+                                <div
+                                    style="margin-bottom: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                    <button type="button" onclick="addQAPair()" style="
+                                        padding: 6px 14px; background: linear-gradient(135deg,#d4af37,#c8961e);
+                                        border: none; border-radius: 6px; color: #0a0a0a;
+                                        font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+                                        + Add Q&amp;A Pair
+                                    </button>
+                                    <span style="color: rgba(255,255,255,0.4); font-size: 0.78rem;">Each line must start
+                                        with <code style="color:#d4af37;">Q:</code> or <code
+                                            style="color:#d4af37;">A:</code></span>
+                                </div>
+                                <textarea name="description" id="descriptionTextarea" rows="8"
+                                    placeholder="Q: What is in the box?&#10;A: Laptop, Power Adaptor, User Guide, Warranty Documents&#10;Q: What is the warranty?&#10;A: 1 Year On-site Service"
+                                    style="font-family: 'Courier New', monospace; font-size: 0.88rem; line-height: 1.7; resize: vertical;"></textarea>
+                                <small style="color: rgba(255,255,255,0.35); display:block; margin-top:6px;">
+                                    ✦ Use <strong style="color:#d4af37;">Q:</strong> for questions and <strong
+                                        style="color:#d4af37;">A:</strong> for answers — one per line. Product page
+                                    shows them as clickable Q&amp;A cards.
+                                </small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">ADD LAPTOP TO INVENTORY</button>
+                    </form>
+                </div> <!-- End Laptop Container -->
+
+                <!-- ACCESSORY FORM CONTAINER -->
+                <div id="accessoryContainer" style="display: none;">
+                    <h2 style="margin-bottom: 20px; color: var(--secondary-accent);">New Accessory Entry</h2>
+                    <form id="accessoryForm">
+                        <div class="form-section active"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                            <div class="input-group"><label>Name *</label><input type="text" name="name"
+                                    placeholder="Pro Gaming Mouse" required></div>
+                            <div class="input-group"><label>Type *</label>
+                                <select name="type" required>
+                                    <option value="Mouse">Mouse</option>
+                                    <option value="Keyboard">Keyboard</option>
+                                    <option value="Headset">Headset</option>
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="Dock">Dock/Hub</option>
+                                    <option value="Bag">Bag/Case</option>
+                                    <option value="Charger">Charger</option>
+                                    <option value="Webcam">Webcam</option>
+                                    <option value="Speaker">Speaker</option>
+                                    <option value="Cable">Cable</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Category *</label>
+                                <select name="category" required>
+                                    <option value="Input Devices">Input Devices</option>
+                                    <option value="Audio">Audio</option>
+                                    <option value="Display">Display</option>
+                                    <option value="Connectivity">Connectivity</option>
+                                    <option value="Protection">Protection</option>
+                                    <option value="Power">Power</option>
+                                    <option value="Video">Video</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Brand *</label><input type="text" name="brand"
+                                    placeholder="Razer" required>
+                            </div>
+                            <div class="input-group"><label>Price (₹) *</label><input type="number" name="price" required>
+                            </div>
+                            <div class="input-group"><label>Stock</label><input type="number" name="stock" value="50">
+                            </div>
+                            <div class="input-group"><label>Connectivity *</label><input type="text" name="connectivity"
+                                    placeholder="Wireless / USB-C" required></div>
+                            <div class="input-group full-width">
+                                <label>Product Images (Multiple)</label>
+                                <input type="file" id="accessoryImages" name="images"
+                                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/svg+xml,image/bmp"
+                                    multiple>
+                                <small style="color: rgba(255,255,255,0.5); margin-top: 5px; display: block;">
+                                    Supported formats: JPG, PNG, GIF, WEBP, SVG, BMP (Max 10 images, 10MB each)
+                                </small>
+                            </div>
+                            <div class="input-group full-width" id="accessoryImagePreviewContainer"
+                                style="display: none;">
+                                <label>Selected Images Preview</label>
+                                <div id="accessoryImagePreview"
+                                    style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                            </div>
+                            <div class="input-group full-width"><label>Description *</label><textarea name="description"
+                                    rows="4" required></textarea></div>
+                        </div>
+                        <button type="submit" class="submit-btn"
+                            style="background: linear-gradient(90deg, var(--secondary-accent), #ff0055);">ADD
+                            ACCESSORY</button>
+                    </form>
+                </div>
+
+
+            <!-- NEWSLETTER MANAGEMENT CONTAINER -->
+            <div id="newsletterContainer" style="display: none;">
+                <h1 class="section-header" style="color: #fff;">Newsletter Management</h1>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Subscribers</div>
+                        <div class="stat-value" id="totalSubscribers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Guest Subs</div>
+                        <div class="stat-value" id="guestSubscribers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">User Subs</div>
+                        <div class="stat-value" id="userSubscribers">0</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid" style="grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Send Newsletter Form -->
+                    <div class="chart-card">
+                        <h3 style="color: #fff;">Send Branded Newsletter</h3>
+                        <form id="adminNewsletterForm">
+                            <div class="input-group" style="margin-bottom: 20px;">
+                                <label>Email Subject</label>
+                                <input type="text" name="subject" placeholder="e.g. Exclusive Weekend Deals!" required
+                                    style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 5px;">
+                            </div>
+                            <div class="input-group" style="margin-bottom: 20px;">
+                                <label>Hero Title</label>
+                                <input type="text" name="title" placeholder="e.g. Upgrade Your Setup Today" required
+                                    style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 5px;">
+                            </div>
+                            <div class="input-group" style="margin-bottom: 20px;">
+                                <label>Body Content (HTML supported)</label>
+                                <textarea name="body" rows="6" placeholder="Write your newsletter content here..."
+                                    required
+                                    style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 5px;"></textarea>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div class="input-group">
+                                    <label>CTA Label (Optional)</label>
+                                    <input type="text" name="ctaLabel" placeholder="Shop Now"
+                                        style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 5px;">
+                                </div>
+                                <div class="input-group">
+                                    <label>CTA Link (Optional)</label>
+                                    <input type="text" name="ctaLink" placeholder="/laptops"
+                                        style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 5px;">
+                                </div>
+                            </div>
+                            <button type="submit" class="submit-btn" style="margin-top: 30px;">🚀 Dispatch to All
+                                Subscribers</button>
+                        </form>
+                    </div>
+
+                    <!-- Subscribers List -->
+                    <div class="chart-card" style="max-height: 600px; overflow-y: auto;">
+                        <h3 style="color: #fff;">Active Subscribers</h3>
+                        <div id="subscribersList">
+                            <!-- Table generated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EMAIL AUDIT LOGS CONTAINER -->
+            <div id="emailLogsContainer" style="display: none;">
+                <h1 class="section-header" style="color: #fff;">Email Audit Logs</h1>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Review outbound communications and track
+                    delivery status.</p>
+
+                <div class="chart-card">
+                    <div style="overflow-x: auto;">
+                        <table id="emailLogsTable" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="text-align: left; border-bottom: 2px solid var(--card-border);">
+                                    <th style="padding: 12px; color: var(--text-secondary);">Recipient</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Type</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Status</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Sent At</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailLogBody">
+                                <!-- Logs generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    </main>
+    </div>
+
+    <!-- Modern Animated Footer -->
+    <footer class="modern-footer">
+        <div class="footer-container">
+            <!-- Main Footer Content -->
+            <div class="footer-content">
+                <!-- Brand Section -->
+                <div class="footer-brand">
+                    <div class="brand-info">
+                        <h2 class="brand-name">Quantéra</h2>
+                        <p class="brand-description">Next-gen laptops designed for creators, gamers, and professionals
+                            who refuse to settle.</p>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                <rect width="4" height="12" x="2" y="9" />
+                                <circle cx="4" cy="4" r="2" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="GitHub">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                                <path d="M9 18c-4.51 2-5-2-7-2" />
+                            </svg>
+                        </a>
+                        <a href="mailto:contact@quantera.com" class="social-link" aria-label="Email">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <div class="footer-nav">
+                        <a href="index.html" class="nav-link">Home</a>
+                        <a href="index.html#products" class="nav-link">Products</a>
+                        <a href="about.html" class="nav-link">About</a>
+                        <a href="order-tracking.html" class="nav-link">Track Order</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="footer-bottom">
+                <p class="copyright">© 2026 Quantéra. All rights reserved.</p>
+                <p class="creator-credit">Crafted by Quantéra Team</p>
+            </div>
+        </div>
+
+        <!-- Large Background Text -->
+        <div class="footer-bg-text">QUANTÉRA</div>
+
+        <!-- Floating Logo -->
+        <div class="footer-logo-container">
+            <div class="footer-logo">
+                <img src="images/Quantera.png" alt="Quantéra Logo">
+            </div>
+        </div>
+
+        <!-- Bottom Line -->
+        <div class="footer-line"></div>
+
+        <!-- Bottom Shadow -->
+        <div class="footer-shadow"></div>
+    </footer>
+
+    <script src="js/admin.js?v=2"></script>
+    <script>
+        // Global Admin UI Overhaul Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Upgrade Standard Selects to Premium Themes
+            const selectsToUpgrade = [
+                'brand', 'category', 'hinge', 'panelType', 'cpuBrand', 
+                'gpuType', 'ramCapacity', 'ramType', 'ramSpeedUnit', 
+                'storageCap', 'storageType', 'type'
+            ];
+            
+            selectsToUpgrade.forEach(name => {
+                const selects = document.querySelectorAll(`select[name="${name}"]`);
+                selects.forEach(select => {
+                    if (typeof createPremiumSelect === 'function') {
+                        createPremiumSelect(select);
+                    }
+                });
+            });
+
+            // 2. Upgrade Datalist Inputs to Premium Comboboxes
+            const comboboxesToUpgrade = [
+                'displaySize', 'resolution', 'aspectRatio', 'refreshRate', 
+                'responseTime', 'brightness', 'colorGamut', 'cpuModel', 
+                'cpuCores', 'threads', 'baseClock', 'boostClock', 'cache', 
+                'npu', 'gpuModel', 'vram', 'tgp', 'wifi', 'bluetooth', 
+                'webcam', 'speakers', 'keyboard', 'touchpad', 'battery', 'adapter'
+            ];
+
+            comboboxesToUpgrade.forEach(name => {
+                const inputs = document.querySelectorAll(`input[name="${name}"][list]`);
+                inputs.forEach(input => {
+                    if (typeof createPremiumCombobox === 'function') {
+                        createPremiumCombobox(input);
+                    }
+                });
+            });
+
+            // 3. Apply Premium Textbox Styling to remaining inputs
+            const restyleFields = () => {
+                document.querySelectorAll('input[type="text"]:not(.q-combobox-input), input[type="number"]:not(.q-combobox-input), input[type="url"], textarea').forEach(input => {
+                    input.classList.add('q-input');
+                });
+            };
+            
+            restyleFields();
+            
+            // Re-run styling when tabs change or dynamic content is added
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-btn')) {
+                    setTimeout(restyleFields, 50);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

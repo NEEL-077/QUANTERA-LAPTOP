@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Quanterā Laptop Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Project Global CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/alert.css">
+    <script src="/js/notifications.js" defer></script>
+</head>
+
+<body style="padding-top: 100px;">
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 80px; height: calc(100vh - 80px);">
+            <div class="logo-container">
+                <h2>QUANTERA</h2>
+            </div>
+            <nav class="dash-nav-links">
+                <li class="dash-nav-item active" data-section="overview">
+                    <i class="fas fa-home"></i> Dashboard
+                </li>
+                <li class="dash-nav-item" data-section="profile">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </li>
+                <li class="dash-nav-item" data-section="orders">
+                    <i class="fas fa-box"></i> My Orders
+                </li>
+                <li class="dash-nav-item" data-section="addresses">
+                    <i class="fas fa-map-marker-alt"></i> Addresses
+                </li>
+                <li class="dash-nav-item" data-section="wishlist">
+                    <i class="fas fa-heart"></i> Wishlist
+                </li>
+                <li class="dash-nav-item" data-section="security">
+                    <i class="fas fa-shield-alt"></i> Security
+                </li>
+                <li class="dash-nav-item" data-section="preferences">
+                    <i class="fas fa-cog"></i> Preferences
+                </li>
+            </nav>
+            <div class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+
+            <!-- Dashboard Overview -->
+            <section id="overviewSection" class="section active">
+                <h1>Welcome back, <span id="userName">User</span></h1>
+
+                <div class="card">
+                    <div class="profile-overview">
+                        <div class="avatar-wrap">
+                            <img src="/images/default-avatar.png" class="avatar-large" id="avatarImg">
+                            <div class="avatar-overlay">
+                                <div class="avatar-actions">
+                                    <button class="avatar-btn" id="avatarChangeBtn" title="Change Avatar">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                    <button class="avatar-btn delete" id="avatarDeleteBtn" title="Delete Avatar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="file" id="avatarUpload" hidden accept="image/*">
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <h2 id="userFullName">John Doe</h2>
+                            <p id="userEmail" style="color:var(--text-secondary)">john@example.com</p>
+                            <div class="profile-meta" style="margin-top: 1rem; display: flex; gap: 2rem;">
+                                <div>
+                                    <span style="font-weight: 700; color: var(--accent);">Loyalty Points</span>
+                                    <h3 id="pointsCount">0</h3>
+                                </div>
+                                <div>
+                                    <span style="font-weight: 700; color: var(--accent);">Wallet Balance</span>
+                                    <h3 id="walletBalance">₹0.00</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Profile Completion</span>
+                            <span id="completionValue">0%</span>
+                        </div>
+                        <div class="completion-bar">
+                            <div class="completion-fill" id="completionFill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <!-- Shortcut Cards -->
+                    <div class="item-card" data-section="orders">
+                        <h3>Recent Orders</h3>
+                        <p id="recentOrderSummary">No orders yet.</p>
+                        <a href="#" style="color: var(--accent); font-size: 0.9rem;">View All</a>
+                    </div>
+                    <div class="item-card" data-section="wishlist">
+                        <h3>Wishlist</h3>
+                        <p id="wishlistSummary">0 items</p>
+                        <a href="#" style="color: var(--accent); font-size: 0.9rem;">Manage List</a>
+                    </div>
+                    <div class="item-card" data-section="security">
+                        <h3>Account Security</h3>
+                        <p id="securityStatus">MFA is Disabled</p>
+                        <a href="#" id="mfaStatusLink" style="color: var(--accent); font-size: 0.9rem;">Enable MFA</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Edit Profile Section -->
+            <section id="profileSection" class="section">
+                <h1>Personal Settings</h1>
+                <div class="card">
+                    <div class="profile-contact-section" style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-size: 1.1rem;">Contact Information</h3>
+                        
+                        <!-- Verified Email Field -->
+                        <div class="verify-field-wrapper">
+                            <label>Email Address</label>
+                            <div class="verify-field">
+                                <div class="verify-info">
+                                    <i class="fas fa-envelope"></i>
+                                    <span id="displayEmail">loading...</span>
+                                    <span class="verify-badge verified" id="emailBadge"><i class="fas fa-check-circle"></i> Verified</span>
+                                </div>
+                                <button type="button" class="btn-text" id="changeEmailBtn">Change</button>
+                            </div>
+                            <div id="emailVerifyWidget" class="verify-widget" style="display: none;"></div>
+                        </div>
+
+                        <!-- Verified Phone Field -->
+                        <div class="verify-field-wrapper" style="margin-top: 1.5rem;">
+                            <label>Mobile Number</label>
+                            <div class="verify-field">
+                                <div class="verify-info">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span id="displayPhone">Not added</span>
+                                    <span class="verify-badge" id="phoneBadge"><i class="fas fa-exclamation-circle"></i> Unverified</span>
+                                </div>
+                                <button type="button" class="btn-text" id="changePhoneBtn">Add / Verify</button>
+                            </div>
+                            <div id="phoneVerifyWidget" class="verify-widget" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <form id="profileForm">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-size: 1.1rem;">Personal Information</h3>
+                        <div class="grid-container">
+                            <div>
+                                <label>Full Name</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div>
+                                <label>Date of Birth</label>
+                                <input type="date" name="dob">
+                            </div>
+                            <div>
+                                <label>Gender</label>
+                                <select name="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                    <option value="Not specified">Not specified</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem;">
+                            <label>Bio / About You</label>
+                            <textarea name="bio" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 2rem;">Save Changes</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Addresses Section -->
+            <section id="addressesSection" class="section">
+                <div class="card-header">
+                    <h1>Saved Addresses</h1>
+                    <button class="btn-primary" id="addAddressBtn">+ Add New</button>
+                </div>
+                <div id="addressGrid" class="grid-container">
+                    <!-- Dynamic Addresses -->
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="ordersSection" class="section">
+                <h1>Order History</h1>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <div id="orderList">
+                        <!-- Dynamic Orders -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="securitySection" class="section">
+                <h1>Security Controls</h1>
+                <div class="card">
+                <!-- Redesigned MFA Section -->
+                <div class="card" id="mfaCard">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div>
+                            <h3 style="margin: 0;">Two-Factor Authentication (MFA)</h3>
+                            <p style="color: var(--text-secondary); margin: 0.5rem 0 0; font-size: 0.9rem;">
+                                Protect your account with multiple layers of verification.
+                            </p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="mfaMasterToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div id="mfaMethodsGrid" class="mfa-methods-grid">
+                        <!-- App Method -->
+                        <div class="mfa-method-card" id="method-app">
+                            <div class="mfa-method-header">
+                                <div class="mfa-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <label class="mfa-checkbox-container">
+                                    <input type="checkbox" id="check-app" data-method="app">
+                                    <span class="mfa-checkmark"></span>
+                                </label>
+                            </div>
+                            <h4>Authenticator App</h4>
+                            <p>Use Google Authenticator or similar apps.</p>
+                            <div class="mfa-badge" id="badge-app" style="display: none;">Verified</div>
+                            <button class="btn-text mfa-default-btn" data-method="app" id="default-btn-app">Set as Default</button>
+                        </div>
+
+                        <!-- Email Method -->
+                        <div class="mfa-method-card" id="method-email">
+                            <div class="mfa-method-header">
+                                <div class="mfa-icon"><i class="fas fa-envelope"></i></div>
+                                <label class="mfa-checkbox-container">
+                                    <input type="checkbox" id="check-email" data-method="email">
+                                    <span class="mfa-checkmark"></span>
+                                </label>
+                            </div>
+                            <h4>Email Code</h4>
+                            <p>Receive a 6-digit code in your inbox.</p>
+                            <div class="mfa-badge" id="badge-email" style="display: none;">Verified</div>
+                            <button class="btn-text mfa-default-btn" data-method="email" id="default-btn-email">Set as Default</button>
+                        </div>
+
+                        <!-- SMS Method -->
+                        <div class="mfa-method-card" id="method-sms">
+                            <div class="mfa-method-header">
+                                <div class="mfa-icon"><i class="fas fa-sms"></i></div>
+                                <label class="mfa-checkbox-container">
+                                    <input type="checkbox" id="check-sms" data-method="sms">
+                                    <span class="mfa-checkmark"></span>
+                                </label>
+                            </div>
+                            <h4>SMS Code</h4>
+                            <p>Receive a code on your mobile device.</p>
+                            <div class="mfa-badge" id="badge-sms" style="display: none;">Verified</div>
+                            <button class="btn-text mfa-default-btn" data-method="sms" id="default-btn-sms">Set as Default</button>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    /* MFA Specific Styles */
+                    .mfa-methods-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                        gap: 1.5rem;
+                        margin-top: 1rem;
+                        transition: all 0.3s ease;
+                    }
+                    .mfa-method-card {
+                        background: rgba(255, 255, 255, 0.03);
+                        border: 1px solid rgba(255, 255, 255, 0.08);
+                        border-radius: 12px;
+                        padding: 1.5rem;
+                        transition: all 0.2s ease;
+                        position: relative;
+                    }
+                    .mfa-method-card:hover {
+                        border-color: var(--accent);
+                        background: rgba(229, 9, 20, 0.05);
+                    }
+                    .mfa-method-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        margin-bottom: 1.2rem;
+                    }
+                    .mfa-icon {
+                        width: 40px;
+                        height: 40px;
+                        background: rgba(229, 9, 20, 0.1);
+                        color: var(--accent);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 10px;
+                        font-size: 1.2rem;
+                    }
+                    .mfa-method-card h4 {
+                        margin: 0 0 0.5rem;
+                        font-size: 1.1rem;
+                    }
+                    .mfa-method-card p {
+                        margin: 0;
+                        font-size: 0.85rem;
+                        color: var(--text-secondary);
+                        line-height: 1.4;
+                    }
+                    .mfa-badge {
+                        display: inline-block;
+                        padding: 2px 8px;
+                        background: rgba(0, 229, 255, 0.2);
+                        color: var(--accent);
+                        border-radius: 4px;
+                        font-size: 0.7rem;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        margin-top: 1rem;
+                        letter-spacing: 0.5px;
+                    }
+                    .mfa-default-btn {
+                        display: block;
+                        margin-top: 1rem;
+                        font-size: 0.8rem;
+                        color: var(--accent);
+                        opacity: 0.6;
+                        transition: opacity 0.2s;
+                    }
+                    .mfa-default-btn:hover {
+                        opacity: 1;
+                        text-decoration: underline;
+                    }
+                    .mfa-default-btn.active {
+                        font-weight: 800;
+                        opacity: 1;
+                        cursor: default;
+                        text-decoration: none !important;
+                    }
+                    .mfa-default-btn.active::before {
+                        content: '★ ';
+                    }
+
+                    /* Custom Checkbox */
+                    .mfa-checkbox-container {
+                        display: block;
+                        position: relative;
+                        width: 22px;
+                        height: 22px;
+                        cursor: pointer;
+                    }
+                    .mfa-checkbox-container input {
+                        position: absolute;
+                        opacity: 0;
+                        cursor: pointer;
+                        height: 0;
+                        width: 0;
+                    }
+                    .mfa-checkmark {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        height: 22px;
+                        width: 22px;
+                        background-color: rgba(255, 255, 255, 0.1);
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        border-radius: 4px;
+                    }
+                    .mfa-checkbox-container:hover input ~ .mfa-checkmark {
+                        background-color: rgba(255, 255, 255, 0.15);
+                    }
+                    .mfa-checkbox-container input:checked ~ .mfa-checkmark {
+                        background-color: var(--accent);
+                        border-color: var(--accent);
+                    }
+                    .mfa-checkmark:after {
+                        content: "";
+                        position: absolute;
+                        display: none;
+                    }
+                    .mfa-checkbox-container input:checked ~ .mfa-checkmark:after {
+                        display: block;
+                    }
+                    .mfa-checkbox-container .mfa-checkmark:after {
+                        left: 7px;
+                        top: 3px;
+                        width: 5px;
+                        height: 10px;
+                        border: solid black;
+                        border-width: 0 2px 2px 0;
+                        transform: rotate(45deg);
+                    }
+
+                    /* Grid Opacity */
+                    .grid-disabled {
+                        opacity: 0.4;
+                        pointer-events: none;
+                        filter: grayscale(0.5);
+                    }
+
+                    /* Switch Toggle */
+                    .switch {
+                        position: relative;
+                        display: inline-block;
+                        width: 50px;
+                        height: 24px;
+                    }
+                    .switch input { opacity: 0; width: 0; height: 0; }
+                    .slider {
+                        position: absolute;
+                        cursor: pointer;
+                        top: 0; left: 0; right: 0; bottom: 0;
+                        background-color: #333;
+                        transition: .4s;
+                    }
+                    .slider:before {
+                        position: absolute;
+                        content: "";
+                        height: 16px; width: 16px;
+                        left: 4px; bottom: 4px;
+                        background-color: white;
+                        transition: .4s;
+                    }
+                    input:checked + .slider { background-color: var(--accent); }
+                    input:focus + .slider { box-shadow: 0 0 1px var(--accent); }
+                    input:checked + .slider:before { transform: translateX(26px); }
+                    .slider.round { border-radius: 24px; }
+                    .slider.round:before { border-radius: 50%; }
+                </style>
+                </div>
+
+                <!-- NEW: Change Password Section -->
+                <div class="card">
+                    <h3>Change Password</h3>
+                    <p style="color: var(--text-secondary); margin: 0.5rem 0 1.5rem;">Keep your account secure by using a strong, unique password.</p>
+                    <form id="changePasswordForm" class="settings-form" style="max-width: 500px;">
+                        <input type="password" name="currentPassword" id="currentPassword" placeholder="Current Password" required 
+                               style="margin-bottom: 1rem; width: 100%; padding: 0.8rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        
+                        <input type="password" name="newPassword" id="newPassword" placeholder="New Password (min. 8 characters)" required 
+                               style="margin-bottom: 1rem; width: 100%; padding: 0.8rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        
+                        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm New Password" required 
+                               style="margin-bottom: 1.5rem; width: 100%; padding: 0.8rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        
+                        <button type="submit" class="btn-primary">Update Password</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3>Active Sessions</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Devices currently logged into your
+                        account.</p>
+                    <div id="sessionList">
+                        <!-- Dynamic Sessions -->
+                    </div>
+                </div>
+                <div class="card" style="border-color: rgba(255, 61, 0, 0.3);">
+                    <h3 style="color: var(--error);">Danger Zone</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Permanently delete your account and all your data. After requesting deletion, you will have 14 days to change your mind and restore your account.</p>
+                    <button class="logout-btn" id="deleteAccountBtn">Delete Account</button>
+                </div>
+            </section>
+
+            <!-- Wishlist Section -->
+            <section id="wishlistSection" class="section">
+                <h1>My Wishlist</h1>
+                <div id="wishlistGrid" class="grid-container">
+                    <!-- Dynamic Wishlist -->
+                </div>
+            </section>
+
+            <!-- Preferences Section -->
+            <section id="preferencesSection" class="section">
+                <h1>Account Preferences</h1>
+                <div class="card">
+                    <h3>Localization</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Set your preferred language and currency for
+                        a personalized shopping experience.</p>
+                    <form id="preferencesForm">
+                        <div class="grid-container">
+                            <div>
+                                <label>Language</label>
+                                <select name="language">
+                                    <option value="en">English (US)</option>
+                                    <option value="en-GB">English (UK)</option>
+                                    <option value="hi">Hindi (हिन्दी)</option>
+                                    <option value="es">Spanish (Español)</option>
+                                    <option value="fr">French (Français)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Currency</label>
+                                <select name="currency">
+                                    <option value="INR">Indian Rupee (₹)</option>
+                                    <option value="USD">US Dollar ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                    <option value="GBP">British Pound (£)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Timezone</label>
+                                <select name="timezone">
+                                    <option value="IST">India Standard Time (IST)</option>
+                                    <option value="UTC">Coordinated Universal Time (UTC)</option>
+                                    <option value="EST">Eastern Standard Time (EST)</option>
+                                    <option value="PST">Pacific Standard Time (PST)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top: 2.5rem;">Notifications & Marketing</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Control how you receive updates and
+                            promotional offers.</p>
+
+                        <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <input type="checkbox" name="newsletter" id="prefNewsletter"
+                                    style="width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; margin: 0;">
+                                <label for="prefNewsletter" style="cursor: pointer; margin: 0;">Subscribe to Newsletter (Deals,
+                                    New Arrivals)</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <input type="checkbox" name="notifications" id="prefNotifications"
+                                    style="width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; margin: 0;">
+                                <label for="prefNotifications" style="cursor: pointer; margin: 0;">Receive Order Status
+                                    Notifications via Email</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <input type="checkbox" name="smsNotifications" id="prefSmsNotifications"
+                                    style="width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; margin: 0;">
+                                <label for="prefSmsNotifications" style="cursor: pointer; margin: 0;">Receive Order Status
+                                    Notifications via SMS (Mobile)</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="margin-top: 2.5rem;">Save Preferences</button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MFA Modal -->
+    <div id="mfaModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(8px);">
+        <div class="card" style="max-width: 420px; width: 90%; border: 1px solid rgba(229, 9, 20, 0.2); box-shadow: 0 0 50px rgba(229, 9, 20, 0.1);">
+            <h2 id="mfaModalTitle" style="margin-top: 0; color: #fff;">Setup MFA</h2>
+            <p id="mfaModalDesc" style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">Scan this QR code with Google Authenticator or Authy:</p>
+            
+            <div id="qrContainer" style="padding: 1.5rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center;">
+                <img id="mfaQrImage" src="" alt="MFA QR Code" style="width: 200px; height: 200px; background: white; padding: 12px; border-radius: 8px; margin-bottom: 1.2rem;">
+                <code id="mfaSecretDisplay" style="word-break: break-all; color: var(--accent); background: rgba(0,242,255,0.1); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-family: monospace;"></code>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">Enter the 6-digit verification code</label>
+                <input type="text" id="mfaTokenInput" placeholder="000 000" maxlength="6"
+                    style="text-align: center; font-size: 2rem; letter-spacing: 8px; font-weight: 800; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; color: var(--accent); width: 100%;">
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-primary" id="confirmMfaBtn" style="flex: 2; height: 48px;">Verify & Activate</button>
+                <button id="closeMfaBtn"
+                    style="flex: 1; height: 48px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; cursor: pointer; transition: all 0.2s;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Navbar & Authentication Logic -->
+    <script src="/js/navbar.js" defer></script>
+    <script src="/js/spotlight.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    
+    <script src="/js/profile.js"></script>
+</body>
+
+</html>
