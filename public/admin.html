@@ -107,6 +107,31 @@
             text-align: left;
         }
 
+        .sidebar-link .sidebar-icon,
+        .header-search .header-icon,
+        .tl-link .tl-icon {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            background: rgba(248, 113, 113, 0.08);
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .header-search .header-icon {
+            margin-right: 10px;
+        }
+
+        .tl-link .tl-icon {
+            display: inline-flex !important;
+            margin-right: 8px;
+        }
+
         .sidebar-link:hover {
             color: var(--text-primary);
             background: rgba(255, 255, 255, 0.05);
@@ -1228,43 +1253,51 @@
 
             <div class="sidebar-nav">
                 <button class="sidebar-link active" data-mode="dashboard">
-                    📊 Dashboard Overview
+                    <img class="sidebar-icon" src="images/admin-icons/dashboard.svg" alt="Dashboard">
+                    Dashboard Overview
                 </button>
                 <div
                     style="margin: 16px 0 8px 16px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
                     Inventory Management
                 </div>
                 <button class="sidebar-link" data-mode="laptop">
-                    💻 Add New Laptop
+                    <img class="sidebar-icon" src="images/admin-icons/laptop.svg" alt="Add Laptop">
+                    Add New Laptop
                 </button>
                 <button class="sidebar-link" data-mode="accessory">
-                    🎧 Add New Accessory
+                    <img class="sidebar-icon" src="images/admin-icons/accessory.svg" alt="Add Accessory">
+                    Add New Accessory
                 </button>
                 <button class="sidebar-link" data-mode="inventory">
-                    📦 View Inventory Products
+                    <img class="sidebar-icon" src="images/admin-icons/inventory.svg" alt="Inventory Products">
+                    View Inventory Products
                 </button>
                 <div
                     style="margin: 16px 0 8px 16px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
                     Sales & Customers
                 </div>
                 <button class="sidebar-link" data-mode="orders">
-                    🛒 Order Management
+                    <img class="sidebar-icon" src="images/admin-icons/orders.svg" alt="Order Management">
+                    Order Management
                 </button>
                 <div
                     style="margin: 16px 0 8px 16px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
                     Marketing & Logs
                 </div>
                 <button class="sidebar-link" data-mode="newsletter">
-                    📧 Newsletters
+                    <img class="sidebar-icon" src="images/admin-icons/newsletter.svg" alt="Newsletters">
+                    Newsletters
                 </button>
                 <button class="sidebar-link" data-mode="emailLogs">
-                    📜 Email Audit Logs
+                    <img class="sidebar-icon" src="images/admin-icons/emaillogs.svg" alt="Email Audit Logs">
+                    Email Audit Logs
                 </button>
             </div>
 
             <div style="padding: 24px; border-top: 1px solid var(--card-border);">
                 <button onclick="window.location.href='/'" class="sidebar-link" style="color: var(--text-secondary);">
-                    ⬅️ Back to Store
+                    <img class="sidebar-icon" src="images/admin-icons/back.svg" alt="Back">
+                    Back to Store
                 </button>
             </div>
         </aside>
@@ -1274,30 +1307,32 @@
             <!-- Top Header -->
             <header class="admin-header">
                 <div class="header-search">
-                    <span style="color: var(--text-secondary);">🔍</span>
+                    <img class="header-icon" src="images/admin-icons/search.svg" alt="Search">
                     <input type="text" placeholder="Search orders, products, users...">
                 </div>
 
                 <!-- Admin Tubelight Pill -->
                 <div class="tl-pill" style="position:relative;">
                     <a href="/" class="tl-link">
-                        <span class="tl-label">🏠 Store</span>
-                        <span class="tl-icon">🏠</span>
+                        <img class="tl-icon" src="images/admin-icons/store.svg" alt="Store">
+                        <span class="tl-label">Store</span>
                     </a>
                     <a href="/admin" class="tl-link tl-active">
                         <span class="tl-lamp"></span>
-                        <span class="tl-label">📊 Dashboard</span>
-                        <span class="tl-icon">📊</span>
+                        <img class="tl-icon" src="images/admin-icons/dashboard.svg" alt="Dashboard">
+                        <span class="tl-label">Dashboard</span>
                     </a>
                     <a href="/order-tracking" class="tl-link">
-                        <span class="tl-label">📦 Track</span>
-                        <span class="tl-icon">📦</span>
+                        <img class="tl-icon" src="images/admin-icons/track.svg" alt="Track">
+                        <span class="tl-label">Track</span>
                     </a>
                 </div>
 
                 <div class="header-actions">
                     <button id="theme-toggle" class="theme-btn admin-theme-btn" aria-label="Toggle Theme"
-                        style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">🌙</button>
+                        style="background: none; border: none; padding: 0; cursor: pointer;">
+                        <img id="theme-icon" src="images/admin-icons/theme.svg" alt="Toggle Theme" width="22" height="22">
+                    </button>
                     <div style="width: 1px; height: 24px; background: var(--card-border);"></div>
                     <div class="admin-profile">
                         <div class="admin-avatar">AD</div>

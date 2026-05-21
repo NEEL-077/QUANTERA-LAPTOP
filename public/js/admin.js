@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- THEME SWITCHING LOGIC ---
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
-    const icon = themeToggle;
+    const icon = document.getElementById('theme-icon');
 
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -42,11 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateIcon(theme) {
         if (!icon) return;
-        if (theme === 'minimalistic') {
-            icon.textContent = '☀️';
-        } else {
-            icon.textContent = '🌙';
-        }
+        icon.src = 'images/admin-icons/theme.png';
+        icon.alt = 'Toggle Theme';
     }
 
     // --- IMAGE PREVIEW FUNCTIONALITY ---
