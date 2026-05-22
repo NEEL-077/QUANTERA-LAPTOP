@@ -971,6 +971,7 @@ async function saveOrder(orderData) {
                     name: item.isAccessory ? item.name : `${item.brand} ${item.series}`,
                     brand: item.brand,
                     model: item.series || item.modelNumber,
+                    image: (item.images && item.images.length > 0) ? item.images[0] : (item.image || ''),
                     price: item.price,
                     quantity: item.quantity,
                     subtotal: item.price * item.quantity,

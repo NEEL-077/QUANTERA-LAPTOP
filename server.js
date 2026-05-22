@@ -2256,6 +2256,136 @@ app.get('/api/admin/email-logs', async (req, res) => {
     }
 });
 
+// API Route to delete an email log
+app.delete('/api/admin/email-logs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const log = await EmailLog.findByIdAndDelete(id);
+        if (!log) return res.status(404).json({ error: 'Log not found' });
+        res.json({ message: 'Log deleted successfully' });
+    } catch (error) {
+        console.error('Delete email log error:', error);
+        res.status(500).json({ error: 'Failed to delete log' });
+    }
+});
+
+// API Route to update an email log
+app.put('/api/admin/email-logs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { recipient, subject, status } = req.body;
+        const log = await EmailLog.findByIdAndUpdate(
+            id,
+            { $set: { recipient, subject, status } },
+            { new: true, runValidators: true }
+        );
+        if (!log) return res.status(404).json({ error: 'Log not found' });
+        res.json({ message: 'Log updated successfully', log });
+    } catch (error) {
+        console.error('Update email log error:', error);
+        res.status(500).json({ error: 'Failed to update log' });
+    }
+});
+
+// API Route to preview generated HTML for an email log
+app.get('/api/admin/email-logs/:id/preview', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const log = await EmailLog.findById(id);
+        if (!log) return res.status(404).json({ error: 'Log not found' });
+
+        let html = '';
+        if (log.templateType === 'OrderConfirmation' && log.metadata?.orderId) {
+            const order = await Order.findByOrderId(log.metadata.orderId);
+            if (order) html = require('./services/email/templates/orderTemplates').orderConfirmation(order);
+        } else if (log.templateType === 'Welcome' && log.metadata?.userId) {
+            const user = await User.findById(log.metadata.userId);
+            if (user) html = require('./services/email/templates/authTemplates').welcomeEmail(user);
+        } else if (log.templateType === 'PasswordReset' && log.metadata?.userId) {
+            const user = await User.findById(log.metadata.userId);
+            if (user) html = require('./services/email/templates/authTemplates').passwordReset(user, 'dummy-token-for-preview');
+        } else if (log.templateType === 'AdminAlert' && log.metadata?.orderId) {
+             const order = await Order.findByOrderId(log.metadata.orderId);
+             if (order) html = require('./services/email/templates/orderTemplates').adminNewOrder(order);
+        } else if (log.templateType === 'Newsletter') {
+             html = require('./services/email/templates/marketingTemplates').welcomeNewsletter(log.recipient, 'dummy-token');
+        } else if (log.templateType === 'StatusUpdate' && log.metadata?.orderId) {
+             const order = await Order.findByOrderId(log.metadata.orderId);
+             if (order) html = require('./services/email/templates/orderTemplates').statusUpdate(order, order.status, 'Preview note');
+        }
+
+        if (!html) {
+            html = `<p>This is a resent message from Quantéra.</p><p>Subject: ${log.subject}</p>`;
+        }
+
+        res.json({ html });
+    } catch (error) {
+        console.error('Preview error:', error);
+        res.status(500).json({ error: 'Failed to generate preview' });
+    }
+});
+
+// API Route to resend an email
+app.post('/api/admin/email-logs/:id/resend', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { html: customHtml } = req.body; // Accept custom HTML from frontend
+        const log = await EmailLog.findById(id);
+        if (!log) return res.status(404).json({ error: 'Log not found' });
+
+        if (customHtml) {
+            await emailService.sendEmail(log.recipient, log.subject, customHtml, log.templateType, log.metadata);
+            return res.json({ message: 'Email resent successfully with custom body' });
+        }
+
+        let sent = false;
+        if (log.templateType === 'OrderConfirmation' && log.metadata?.orderId) {
+            const order = await Order.findByOrderId(log.metadata.orderId);
+            if (order) {
+                const originalEmail = order.customer.email;
+                order.customer.email = log.recipient;
+                await emailService.sendOrderConfirmation(order);
+                order.customer.email = originalEmail;
+                sent = true;
+            }
+        } else if (['Welcome', 'PasswordReset'].includes(log.templateType) && log.metadata?.userId) {
+            const user = await User.findById(log.metadata.userId);
+            if (user) {
+                const originalEmail = user.email;
+                user.email = log.recipient;
+                if (log.templateType === 'Welcome') await emailService.sendWelcomeEmail(user);
+                user.email = originalEmail;
+                sent = true;
+            }
+        } else if (log.templateType === 'AdminAlert' && log.metadata?.orderId) {
+             const order = await Order.findByOrderId(log.metadata.orderId);
+             if (order) {
+                 const adminHtml = require('./services/email/templates/orderTemplates').adminNewOrder(order);
+                 await emailService.sendEmail(log.recipient, log.subject, adminHtml, 'AdminAlert', { orderId: order.orderId });
+                 sent = true;
+             }
+        } else if (log.templateType === 'Newsletter') {
+             await emailService.sendNewsletterWelcome(log.recipient, 'placeholder-token');
+             sent = true;
+        }
+
+        if (!sent) {
+            await emailService.sendEmail(
+                log.recipient, 
+                log.subject, 
+                `<p>This is a resent message from Quantéra.</p><p>Subject: ${log.subject}</p>`, 
+                log.templateType, 
+                log.metadata
+            );
+        }
+
+        res.json({ message: 'Email resent successfully' });
+    } catch (error) {
+        console.error('Resend email error:', error);
+        res.status(500).json({ error: 'Failed to resend email: ' + error.message });
+    }
+});
+
 // API Route to fetch newsletter subscribers for admin
 app.get('/api/admin/subscribers', async (req, res) => {
     try {

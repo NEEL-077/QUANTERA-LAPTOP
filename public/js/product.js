@@ -539,7 +539,7 @@ function renderSpecifications() {
             'Storage': `${currentProduct.storageCap || 'N/A'}GB ${currentProduct.storageType || ''}`,
             'Max RAM': currentProduct.maxRam ? `${currentProduct.maxRam}GB` : 'N/A',
             'RAM Slots': currentProduct.ramSlots || 'N/A',
-            'Extra Slots': currentProduct.extraSlots || 'N/A'
+            'Extra Storage Slot': currentProduct.extraSlots || 'N/A'
         },
         'Display': {
             'Size': currentProduct.displaySize ? `${currentProduct.displaySize}"` : 'N/A',

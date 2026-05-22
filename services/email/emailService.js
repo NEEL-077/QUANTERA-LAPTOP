@@ -1,13 +1,65 @@
+const fs = require('fs');
+const path = require('path');
 const { transporter, verifyConnection } = require('./emailConfig');
 const orderTemplates = require('./templates/orderTemplates');
 const authTemplates = require('./templates/authTemplates');
 const marketingTemplates = require('./templates/marketingTemplates');
 const EmailLog = require('../../models/EmailLog');
 
+// Root of the public folder where local images are served from
+const PUBLIC_DIR = path.join(__dirname, '..', '..', 'public');
+
 /**
  * Quantéra Email Service
  * High-quality email dispatcher for order notifications, authentication, and marketing.
  */
+
+/**
+ * Converts a local image path (relative to /public) into a Base64 data URI so 
+ * that email clients (Gmail, Outlook) can display it without a public internet URL.
+ * Falls back to the original path if the file cannot be read.
+ * 
+ * @param {string} imgPath - e.g. "images/ASUS ROG STRIX G16.webp" or "/images/..."
+ * @returns {string} - data:image/... base64 URI, or original path if not found
+ */
+function imageToBase64(imgPath) {
+    try {
+        // Strip leading slash
+        const cleaned = imgPath.replace(/^\//, '');
+        const fullPath = path.join(PUBLIC_DIR, cleaned);
+        if (!fs.existsSync(fullPath)) return imgPath;
+
+        const data = fs.readFileSync(fullPath);
+        const ext = path.extname(fullPath).toLowerCase().replace('.', '');
+        // Map extension to MIME type
+        const mimeMap = { jpg: 'jpeg', jpeg: 'jpeg', png: 'png', webp: 'webp', avif: 'avif', gif: 'gif', svg: 'svg+xml' };
+        const mime = mimeMap[ext] || 'jpeg';
+        return `data:image/${mime};base64,${data.toString('base64')}`;
+    } catch (e) {
+        console.warn('⚠️ Could not embed image:', imgPath, e.message);
+        return imgPath;
+    }
+}
+
+/**
+ * Resolves all item images in an order to Base64 data URIs (or keeps full https:// URLs).
+ */
+function resolveItemImages(order) {
+    if (!order || !order.items) return order;
+    const cloned = JSON.parse(JSON.stringify(order)); // deep clone
+    cloned.items = cloned.items.map(item => {
+        if (item.image) {
+            if (item.image.startsWith('http')) {
+                // Already a public URL — use as-is
+            } else {
+                item.image = imageToBase64(item.image);
+            }
+        }
+        return item;
+    });
+    return cloned;
+}
+
 class EmailService {
     constructor() {
         this.from = process.env.EMAIL_FROM || '"Quantéra Laptop Store" <support@quantera.com>';
@@ -82,13 +134,15 @@ class EmailService {
      * ORDERS: Send Order Confirmation
      */
     async sendOrderConfirmation(order) {
-        const html = orderTemplates.orderConfirmation(order);
+        // Embed local images as Base64 so Gmail can display them
+        const resolvedOrder = resolveItemImages(order);
+        const html = orderTemplates.orderConfirmation(resolvedOrder);
         
         // Send to customer
         await this.sendEmail(order.customer.email, `🛍️ Order Confirmed! (ID: ${order.orderId})`, html, 'OrderConfirmation', { orderId: order.orderId });
         
         // Notify Admin
-        const adminHtml = orderTemplates.adminNewOrder(order);
+        const adminHtml = orderTemplates.adminNewOrder(resolvedOrder);
         const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
         if (adminEmail) {
             await this.sendEmail(adminEmail, `🚨 New Order Alert: ${order.orderId}`, adminHtml, 'AdminAlert', { orderId: order.orderId });
@@ -99,7 +153,8 @@ class EmailService {
      * ORDERS: Send Status Update
      */
     async sendOrderStatusUpdate(order, status, note = '') {
-        const html = orderTemplates.statusUpdate(order, status, note);
+        const resolvedOrder = resolveItemImages(order);
+        const html = orderTemplates.statusUpdate(resolvedOrder, status, note);
         return this.sendEmail(order.customer.email, `📢 Order Status Update: ${status}`, html, 'StatusUpdate', { orderId: order.orderId });
     }
 

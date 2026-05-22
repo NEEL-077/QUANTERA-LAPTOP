@@ -401,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // If there's a next tab, click it
             if (activeIdx !== -1 && activeIdx < tabsArray.length - 1) {
                 tabsArray[activeIdx + 1].click();
-                
+
                 // Scroll form container to top for fresh view
                 const container = document.querySelector('.admin-content');
                 if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
@@ -429,20 +429,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================
     // INVENTORY LOGIC — 3-Layer Drilldown: Brand → Series → Product Grid
     // =========================================================
-    let allLaptops     = [];
+    let allLaptops = [];
     let allAccessories = [];
-    let invCurrentBrand  = null;
+    let invCurrentBrand = null;
     let invCurrentSeries = null;
 
     async function loadInventory() {
         // Always reset to brand view on (re)load
-        invCurrentBrand  = null;
+        invCurrentBrand = null;
         invCurrentSeries = null;
-        const brandView  = document.getElementById('inv-brand-view');
+        const brandView = document.getElementById('inv-brand-view');
         const seriesView = document.getElementById('inv-series-view');
-        const productView= document.getElementById('inv-product-view');
-        if (brandView)   brandView.style.display   = 'block';
-        if (seriesView)  seriesView.style.display  = 'none';
+        const productView = document.getElementById('inv-product-view');
+        if (brandView) brandView.style.display = 'block';
+        if (seriesView) seriesView.style.display = 'none';
         if (productView) productView.style.display = 'none';
         updateInvBreadcrumb();
 
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch('/api/laptops?full=true'),
                 fetch('/api/accessories')
             ]);
-            allLaptops     = await laptopsRes.json();
+            allLaptops = await laptopsRes.json();
             allAccessories = await accessoriesRes.json();
             renderBrandView();
         } catch (e) {
@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.querySelectorAll('.inv-crumb-link').forEach(link => {
             link.style.color = 'var(--text-secondary)';
             link.onmouseover = () => link.style.color = 'var(--accent-color)';
-            link.onmouseout  = () => link.style.color = 'var(--text-secondary)';
+            link.onmouseout = () => link.style.color = 'var(--text-secondary)';
         });
     }
 
@@ -521,11 +521,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const aCount = items.filter(i => i.source === 'Accessories').length;
         const bCount = new Set(items.map(i => i.brand || 'Unknown').filter(Boolean)).size;
         el.innerHTML = `
-            <div style="display:flex;gap:16px;flex-wrap:wrap;text-align:right">
+            <div style="display:flex;gap:16px;flex-wrap:wrap;text-align:right;align-items:center;">
                 <span><strong>${items.length}</strong> products</span>
                 <span><strong>${bCount}</strong> brands</span>
-                ${lCount > 0 ? `<span>💻 <strong>${lCount}</strong></span>` : ''}
-                ${aCount > 0 ? `<span>🎧 <strong>${aCount}</strong></span>` : ''}
+                ${lCount > 0 ? `<span style="display:inline-flex;align-items:center;gap:4px;"><img src="/images/admin-icons/laptop.svg" width="16" height="16" alt="Laptops"> <strong>${lCount}</strong></span>` : ''}
+                ${aCount > 0 ? `<span style="display:inline-flex;align-items:center;gap:4px;"><img src="/images/admin-icons/accessory.svg" width="16" height="16" alt="Accessories"> <strong>${aCount}</strong></span>` : ''}
             </div>`;
     }
 
@@ -604,14 +604,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function getStockBadge(item) {
         const stock = item.stock ?? item.quantity;
         if (stock === null || stock === undefined) return '<span class="inv-stock-badge inv-stock-in">In Stock</span>';
-        if (stock <= 0)  return '<span class="inv-stock-badge inv-stock-out">Out of Stock</span>';
-        if (stock <= 5)  return `<span class="inv-stock-badge inv-stock-low">Low (${stock})</span>`;
+        if (stock <= 0) return '<span class="inv-stock-badge inv-stock-out">Out of Stock</span>';
+        if (stock <= 5) return `<span class="inv-stock-badge inv-stock-low">Low (${stock})</span>`;
         return `<span class="inv-stock-badge inv-stock-in">${stock} In Stock</span>`;
     }
 
     function buildProductCard(item) {
         const stockBadge = getStockBadge(item);
-        const typeBadge  = `<span class="inv-type-badge">${item.type}</span>`;
+        const typeBadge = `<span class="inv-type-badge">${item.type}</span>`;
         const imgSrc = (item.images && item.images.length > 0) ? item.images[0] : (item.image || null);
         const placeholder = item.source === 'Laptops' ? '💻' : '🎧';
         const imgHtml = imgSrc
@@ -624,11 +624,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const ram = item.ramCapacity || item.ram_gb;
             const storage = item.storageCap || item.storage_gb;
             const storageType = item.storageType || item.storage_type || '';
-            if (cpu)     specsHtml += `<div class="inv-product-card__spec">⚡ ${cpu}</div>`;
-            if (ram)     specsHtml += `<div class="inv-product-card__spec">🔧 ${ram}GB RAM</div>`;
+            if (cpu) specsHtml += `<div class="inv-product-card__spec">⚡ ${cpu}</div>`;
+            if (ram) specsHtml += `<div class="inv-product-card__spec">🔧 ${ram}GB RAM</div>`;
             if (storage) specsHtml += `<div class="inv-product-card__spec">💾 ${storage}${storageType ? ' ' + storageType : ''}</div>`;
         } else {
-            if (item.type)         specsHtml += `<div class="inv-product-card__spec">📦 ${item.type}</div>`;
+            if (item.type) specsHtml += `<div class="inv-product-card__spec">📦 ${item.type}</div>`;
             if (item.connectivity) specsHtml += `<div class="inv-product-card__spec">🔗 ${item.connectivity}</div>`;
             const s = item.stock ?? item.quantity;
             if (s !== null && s !== undefined) specsHtml += `<div class="inv-product-card__spec">📊 Stock: ${s}</div>`;
@@ -655,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="inv-product-card__footer">
                     <button class="action-btn edit-btn" data-source="${item.source}" data-index="${item.index}">✏️ Edit</button>
-                    <button class="action-btn delete-btn" data-source="${item.source}" data-index="${item.index}">🗑️ Delete</button>
+                    <button class="action-btn delete-btn" data-source="${item.source}" data-id="${item._id || item.id}">🗑️ Delete</button>
                 </div>
             </div>`;
     }
@@ -668,20 +668,20 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---------- Layer 1: Brand Grid ---------- */
 
     window.invGoHome = function () {
-        invCurrentBrand  = null;
+        invCurrentBrand = null;
         invCurrentSeries = null;
-        document.getElementById('inv-brand-view').style.display   = 'block';
-        document.getElementById('inv-series-view').style.display  = 'none';
+        document.getElementById('inv-brand-view').style.display = 'block';
+        document.getElementById('inv-series-view').style.display = 'none';
         document.getElementById('inv-product-view').style.display = 'none';
         updateInvBreadcrumb();
         renderBrandView();
     };
 
     window.invSelectBrand = function (brand) {
-        invCurrentBrand  = brand;
+        invCurrentBrand = brand;
         invCurrentSeries = null;
-        document.getElementById('inv-brand-view').style.display   = 'none';
-        document.getElementById('inv-series-view').style.display  = 'block';
+        document.getElementById('inv-brand-view').style.display = 'none';
+        document.getElementById('inv-series-view').style.display = 'block';
         document.getElementById('inv-product-view').style.display = 'none';
         updateInvBreadcrumb();
         renderSeriesView(brand);
@@ -709,19 +709,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Brand logo map — add more as images become available
         const BRAND_LOGOS = {
-            'ASUS':          '/images/asus.png',
-            'Acer':          '/images/acer.png',
-            'Dell':          '/images/dell.png',
-            'HP':            '/images/hp.png',
-            'Lenovo':        '/images/lenovo.png',
-            'MSI':           '/images/msi.png',
-            'Razer':         '/images/RAZER.png',
-            'Apple':         '/images/APPLE.png',
+            'ASUS': '/images/asus.png',
+            'Acer': '/images/acer.png',
+            'Dell': '/images/dell.png',
+            'HP': '/images/hp.png',
+            'Lenovo': '/images/lenovo.png',
+            'MSI': '/images/msi.png',
+            'Razer': '/images/RAZER.png',
+            'Apple': '/images/APPLE.png',
         };
 
         brandGrid.innerHTML = Object.keys(groups).sort().map(brand => {
-            const safeB    = brand.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-            const logoSrc  = BRAND_LOGOS[brand];
+            const safeB = brand.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            const logoSrc = BRAND_LOGOS[brand];
             const initials = brand.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
 
             const logoHtml = logoSrc
@@ -746,36 +746,36 @@ document.addEventListener('DOMContentLoaded', () => {
     window.invGoToSeries = function () {
         const brand = invCurrentBrand;
         invCurrentSeries = null;
-        document.getElementById('inv-brand-view').style.display   = 'none';
-        document.getElementById('inv-series-view').style.display  = 'block';
+        document.getElementById('inv-brand-view').style.display = 'none';
+        document.getElementById('inv-series-view').style.display = 'block';
         document.getElementById('inv-product-view').style.display = 'none';
         updateInvBreadcrumb();
         renderSeriesView(brand);
     };
 
     window.invSelectSeries = function (brand, series) {
-        invCurrentBrand  = brand;
+        invCurrentBrand = brand;
         invCurrentSeries = series;
-        document.getElementById('inv-brand-view').style.display   = 'none';
-        document.getElementById('inv-series-view').style.display  = 'none';
+        document.getElementById('inv-brand-view').style.display = 'none';
+        document.getElementById('inv-series-view').style.display = 'none';
         document.getElementById('inv-product-view').style.display = 'block';
         updateInvBreadcrumb();
         renderProductCardGrid(brand, series);
     };
 
     const SERIES_ICONS = {
-        'ROG':'🔥','TUF':'⚔️','ZenBook':'✨','VivoBook':'📱','ProArt':'🎨',
-        'ExpertBook':'💼','ThinkPad':'🖥️','IdeaPad':'💡','Inspiron':'🌟',
-        'XPS':'💎','Pavilion':'🏠','Spectre':'👑','OMEN':'🎮','Predator':'🦁',
-        'Nitro':'⚡','Mouse':'🖱️','Keyboard':'⌨️','Headset':'🎧',
-        'Monitor':'🖱️','Dock':'🔌','Bag':'🎒','General':'📦','Uncategorized':'📁'
+        'ROG': '🔥', 'TUF': '⚔️', 'ZenBook': '✨', 'VivoBook': '📱', 'ProArt': '🎨',
+        'ExpertBook': '💼', 'ThinkPad': '🖥️', 'IdeaPad': '💡', 'Inspiron': '🌟',
+        'XPS': '💎', 'Pavilion': '🏠', 'Spectre': '👑', 'OMEN': '🎮', 'Predator': '🦁',
+        'Nitro': '⚡', 'Mouse': '🖱️', 'Keyboard': '⌨️', 'Headset': '🎧',
+        'Monitor': '🖱️', 'Dock': '🔌', 'Bag': '🎒', 'General': '📦', 'Uncategorized': '📁'
     };
 
     function renderSeriesView(brand) {
         const items = getFilteredItems().filter(i => (i.brand || 'Unknown Brand') === brand);
         const initials = brand.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-        const lCount   = items.filter(i => i.source === 'Laptops').length;
-        const aCount   = items.filter(i => i.source === 'Accessories').length;
+        const lCount = items.filter(i => i.source === 'Laptops').length;
+        const aCount = items.filter(i => i.source === 'Accessories').length;
 
         const headerEl = document.getElementById('inv-brand-header');
         if (headerEl) {
@@ -812,7 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         html += Object.keys(seriesGroups).sort().map(s => {
             const safeS = s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-            const icon  = SERIES_ICONS[s] || '📁';
+            const icon = SERIES_ICONS[s] || '📁';
             const count = seriesGroups[s].length;
             return `
                 <div class="inv-series-card" onclick="window.invSelectSeries('${safeB}','${safeS}')">
@@ -863,25 +863,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function invHandleSearch() {
         const searchTerm = (document.getElementById('inventorySearch')?.value || '').toLowerCase().trim();
-        const brandGrid  = document.getElementById('inv-brand-grid');
-        const brandView  = document.getElementById('inv-brand-view');
+        const brandGrid = document.getElementById('inv-brand-grid');
+        const brandView = document.getElementById('inv-brand-view');
         const seriesView = document.getElementById('inv-series-view');
-        const productView= document.getElementById('inv-product-view');
+        const productView = document.getElementById('inv-product-view');
 
         if (!searchTerm) {
-            invCurrentBrand  = null;
+            invCurrentBrand = null;
             invCurrentSeries = null;
-            if (brandGrid)   brandGrid.className = 'inv-brand-grid';
-            if (brandView)   brandView.style.display   = 'block';
-            if (seriesView)  seriesView.style.display  = 'none';
+            if (brandGrid) brandGrid.className = 'inv-brand-grid';
+            if (brandView) brandView.style.display = 'block';
+            if (seriesView) seriesView.style.display = 'none';
             if (productView) productView.style.display = 'none';
             updateInvBreadcrumb();
             renderBrandView();
             return;
         }
 
-        if (brandView)   brandView.style.display   = 'block';
-        if (seriesView)  seriesView.style.display  = 'none';
+        if (brandView) brandView.style.display = 'block';
+        if (seriesView) seriesView.style.display = 'none';
         if (productView) productView.style.display = 'none';
 
         const breadcrumb = document.getElementById('inv-breadcrumb');
@@ -891,14 +891,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const items = getFilteredItems().filter(item =>
             item.displayName.toLowerCase().includes(searchTerm) ||
-            (item.brand           && item.brand.toLowerCase().includes(searchTerm))           ||
-            (item.series          && item.series.toLowerCase().includes(searchTerm))          ||
-            (item.cpuBrand        && item.cpuBrand.toLowerCase().includes(searchTerm))        ||
+            (item.brand && item.brand.toLowerCase().includes(searchTerm)) ||
+            (item.series && item.series.toLowerCase().includes(searchTerm)) ||
+            (item.cpuBrand && item.cpuBrand.toLowerCase().includes(searchTerm)) ||
             (item.processor_brand && item.processor_brand.toLowerCase().includes(searchTerm)) ||
-            (item.cpuModel        && item.cpuModel.toLowerCase().includes(searchTerm))        ||
+            (item.cpuModel && item.cpuModel.toLowerCase().includes(searchTerm)) ||
             (item.processor_model && item.processor_model.toLowerCase().includes(searchTerm)) ||
-            (item.gpuModel        && item.gpuModel.toLowerCase().includes(searchTerm))        ||
-            (item.gpu             && item.gpu.toLowerCase().includes(searchTerm))
+            (item.gpuModel && item.gpuModel.toLowerCase().includes(searchTerm)) ||
+            (item.gpu && item.gpu.toLowerCase().includes(searchTerm))
         );
 
         if (!brandGrid) return;
@@ -935,7 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DELETE HANDLER ---
     async function handleDelete(event) {
         const source = event.currentTarget.getAttribute('data-source');
-        const index = parseInt(event.currentTarget.getAttribute('data-index'));
+        const itemId = event.currentTarget.getAttribute('data-id');
 
         const itemType = source === 'Laptops' ? 'laptop' : 'accessory';
         const confirmMessage = `Are you sure you want to delete this ${itemType}?`;
@@ -946,7 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const endpoint = source === 'Laptops' ? '/api/laptops' : '/api/accessories';
-            const response = await fetch(`${endpoint}/${index}`, {
+            const response = await fetch(`${endpoint}/${itemId}`, {
                 method: 'DELETE'
             });
 
@@ -1310,7 +1310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 allOrders = await response.json();
                 console.log('Orders loaded from server:', allOrders.length);
-                
+
                 // Remove offline indicator if it exists
                 const existingIndicator = document.getElementById('offlineIndicator');
                 if (existingIndicator) {
@@ -1321,11 +1321,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             console.warn('Could not load orders from server, trying localStorage:', e.message);
-            
+
             // Fallback to localStorage
             const localOrders = JSON.parse(localStorage.getItem('quantera_orders') || '[]');
             console.log('Raw localStorage orders:', localOrders);
-            
+
             // Transform localStorage orders to match server format
             allOrders = localOrders.map(order => {
                 console.log('Transforming order:', order.orderId);
@@ -1350,9 +1350,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     payment: order.payment || { method: 'Unknown', status: 'Pending' }
                 };
             });
-            
+
             console.log('Transformed orders:', allOrders);
-            
+
             // Add offline indicator
             const offlineIndicator = document.createElement('div');
             offlineIndicator.id = 'offlineIndicator';
@@ -1366,22 +1366,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 border-radius: 5px;
             `;
             offlineIndicator.textContent = '⚠️ Server Offline - Showing orders from local storage only';
-            
+
             const existingIndicator = document.getElementById('offlineIndicator');
             if (existingIndicator) {
                 existingIndicator.remove();
             }
-            
+
             if (ordersTableBody.parentNode) {
                 ordersTableBody.parentNode.insertBefore(offlineIndicator, ordersTableBody.parentNode.firstChild);
             }
-            
+
             if (allOrders.length === 0) {
                 ordersTableBody.innerHTML = '<tr><td colspan="6" style="padding: 40px; text-align: center; color: #aaa;">No orders found (server offline, showing localStorage data)</td></tr>';
                 return;
             }
         }
-        
+
         console.log('Calling renderOrders with', allOrders.length, 'orders');
         renderOrders();
     }
@@ -1518,7 +1518,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE'
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 await loadOrders(); // Refresh orders after successful deletion
             } else {
@@ -1600,8 +1600,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div><strong>Name:</strong> ${order.customer?.name || 'N/A'}</div>
                         <div><strong>Email:</strong> ${order.customer?.email || 'N/A'}</div>
                         <div><strong>Phone:</strong> ${order.customer?.phone || 'N/A'}</div>
-                        <div><strong>Shipping Address:</strong> ${order.shippingAddress ? 
-                            `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}` : 'N/A'}</div>
+                        <div><strong>Shipping Address:</strong> ${order.shippingAddress ?
+                `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}` : 'N/A'}</div>
                     </div>
                 </div>
 
@@ -1673,4 +1673,229 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // ============================================
+    // EMAIL AUDIT LOGS
+    // ============================================
+
+    let allEmailLogs = [];
+
+    async function loadEmailLogs() {
+        const tbody = document.getElementById('emailLogBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: #aaa;">Loading email logs...</td></tr>';
+
+        try {
+            const response = await fetch('/api/admin/email-logs');
+            if (response.ok) {
+                allEmailLogs = await response.json();
+                
+                if (allEmailLogs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: #aaa;">No email logs found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = allEmailLogs.map(log => {
+                    const statusColor = log.status.toLowerCase() === 'sent' ? '#4CAF50' : '#F44336';
+                    const textColor = log.status.toLowerCase() === 'sent' ? '#000' : '#fff';
+                    const sentAt = new Date(log.sentAt).toLocaleString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+
+                    return `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+                            <td style="padding: 15px; color: #fff; font-size: 0.9rem;">
+                                <div style="font-weight: 500;">${log.recipient}</div>
+                                <div style="color: #aaa; font-size: 0.8rem; margin-top: 4px;">Sub: ${log.subject}</div>
+                            </td>
+                            <td style="padding: 15px; color: #aaa;">${log.templateType}</td>
+                            <td style="padding: 15px;">
+                                <span style="background: ${statusColor}; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: ${textColor};">
+                                    ${log.status.toUpperCase()}
+                                </span>
+                            </td>
+                            <td style="padding: 15px; color: #aaa; font-size: 0.9rem;">${sentAt}</td>
+                            <td style="padding: 15px;">
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    ${log.error ? `<span title="${log.error.replace(/"/g, '&quot;')}" style="cursor: help; background: rgba(244,67,54,0.1); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(244,67,54,0.3); color: #ff5252; font-size: 0.8rem;">View Error</span>` : '<span style="color: #4CAF50; font-size: 0.8rem; margin-right: 5px;">✓ Success</span>'}
+                                    <button class="edit-emaillog-btn" data-id="${log._id}" style="padding: 5px 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Add hover effect
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    row.addEventListener('mouseenter', () => row.style.background = 'rgba(255,255,255,0.03)');
+                    row.addEventListener('mouseleave', () => row.style.background = 'transparent');
+                });
+
+                document.querySelectorAll('.edit-emaillog-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const logId = e.currentTarget.getAttribute('data-id');
+                        openEmailLogModal(logId);
+                    });
+                });
+
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: #F44336;">Failed to load email logs</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error loading email logs:', error);
+            tbody.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: #F44336;">Error connecting to server</td></tr>';
+        }
+    }
+
+    async function openEmailLogModal(id) {
+        const log = allEmailLogs.find(l => l._id === id);
+        if (!log) return;
+
+        document.getElementById('editEmailLogId').value = log._id;
+        document.getElementById('editEmailRecipient').value = log.recipient;
+        document.getElementById('editEmailSubject').value = log.subject;
+        document.getElementById('editEmailTemplate').value = log.templateType;
+        
+        const statusSelect = document.getElementById('editEmailStatus');
+        for (let i = 0; i < statusSelect.options.length; i++) {
+            if (statusSelect.options[i].value.toLowerCase() === log.status.toLowerCase()) {
+                statusSelect.selectedIndex = i;
+                break;
+            }
+        }
+
+        const errorField = document.getElementById('editEmailError');
+        if (log.error) {
+            errorField.value = log.error;
+            errorField.style.color = '#F44336';
+        } else {
+            errorField.value = 'No errors. Email was sent successfully.';
+            errorField.style.color = '#4CAF50';
+        }
+
+        const bodyField = document.getElementById('editEmailBody');
+        bodyField.value = 'Loading preview...';
+        document.getElementById('emailLogModal').style.display = 'flex';
+
+        try {
+            const res = await fetch(`/api/admin/email-logs/${id}/preview`);
+            if (res.ok) {
+                const data = await res.json();
+                bodyField.value = data.html || '';
+            } else {
+                bodyField.value = 'Failed to load preview.';
+            }
+        } catch (err) {
+            console.error('Failed to load preview', err);
+            bodyField.value = 'Error loading preview.';
+        }
+    }
+
+    const emailLogModal = document.getElementById('emailLogModal');
+    if (emailLogModal) {
+        document.getElementById('closeEmailLogModal').addEventListener('click', () => {
+            emailLogModal.style.display = 'none';
+        });
+
+        emailLogModal.addEventListener('click', (e) => {
+            if (e.target === emailLogModal) emailLogModal.style.display = 'none';
+        });
+
+        document.getElementById('emailLogForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editEmailLogId').value;
+            const recipient = document.getElementById('editEmailRecipient').value;
+            const subject = document.getElementById('editEmailSubject').value;
+            const status = document.getElementById('editEmailStatus').value;
+
+            try {
+                const res = await fetch(`/api/admin/email-logs/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipient, subject, status })
+                });
+
+                if (res.ok) {
+                    alert('Email log updated successfully!');
+                    emailLogModal.style.display = 'none';
+                    loadEmailLogs();
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Failed to update email log');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error updating email log');
+            }
+        });
+
+        document.getElementById('deleteEmailLogBtn').addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete this log?')) return;
+            const id = document.getElementById('editEmailLogId').value;
+
+            try {
+                const res = await fetch(`/api/admin/email-logs/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert('Log deleted!');
+                    emailLogModal.style.display = 'none';
+                    loadEmailLogs();
+                } else {
+                    alert('Failed to delete log');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error deleting log');
+            }
+        });
+
+        document.getElementById('resendEmailLogBtn').addEventListener('click', async () => {
+            if (!confirm('Resend this email?')) return;
+            const id = document.getElementById('editEmailLogId').value;
+            const btn = document.getElementById('resendEmailLogBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+
+            try {
+                const recipient = document.getElementById('editEmailRecipient').value;
+                const subject = document.getElementById('editEmailSubject').value;
+                const status = document.getElementById('editEmailStatus').value;
+                const customHtml = document.getElementById('editEmailBody').value;
+
+                await fetch(`/api/admin/email-logs/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipient, subject, status })
+                });
+
+                const res = await fetch(`/api/admin/email-logs/${id}/resend`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html: customHtml })
+                });
+                
+                if (res.ok) {
+                    alert('Email resent successfully!');
+                    emailLogModal.style.display = 'none';
+                    loadEmailLogs();
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Failed to resend email');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error resending email');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+    
+    // Attach to window just in case
+    window.loadEmailLogs = loadEmailLogs;
+
 });
