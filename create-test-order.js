@@ -4,7 +4,7 @@ const Order = require('./models/Order');
 
 async function createTestOrder() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        await mongoose.connect(process.env.MONGO_URI || process.env.MONGODB_URI);
         const dummyOrder = new Order({
             orderId: 'ORD-ERR-TEST',
             customer: {

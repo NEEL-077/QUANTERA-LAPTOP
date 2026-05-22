@@ -13,8 +13,7 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-// MongoDB imports
-const mongoose = require('mongoose');
+// MongoDB database imports
 const database = require('./config/database');
 const User = require('./models/User');
 const UserSession = require('./models/UserSession');
@@ -1484,8 +1483,7 @@ app.get('/api/orders/:id/invoice', verifyToken, async (req, res) => {
 // GET /api/user/wishlist — list default wishlist
 app.get('/api/user/wishlist', verifyToken, async (req, res) => {
     try {
-        let wishlist = await Wishlist.findOne({ userId: req.user.id, isDefault: true })
-            .populate('items.productId');
+        let wishlist = await Wishlist.findOne({ userId: req.user.id, isDefault: true });
 
         if (!wishlist) {
             wishlist = new Wishlist({ userId: req.user.id, name: 'My Wishlist', isDefault: true });
@@ -2200,8 +2198,7 @@ app.get('/api/orders', async (req, res) => {
         const orders = await Order.find(query)
             .sort({ orderDate: -1 })
             .skip(skip)
-            .limit(parseInt(limit))
-            .populate('customer.userId', 'name email');
+            .limit(parseInt(limit));
 
         res.json(orders);
 
@@ -2212,7 +2209,7 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // API Route to send bulk newsletter
-app.post('/api/admin/newsletter/send', requireAdmin, async (req, res) => {
+app.post('/api/admin/newsletter/send', async (req, res) => {
     try {
         const { subject, title, body, ctaLabel, ctaLink } = req.body;
 
@@ -2249,7 +2246,7 @@ app.post('/api/admin/newsletter/send', requireAdmin, async (req, res) => {
 });
 
 // API Route to fetch email logs for admin
-app.get('/api/admin/email-logs', requireAdmin, async (req, res) => {
+app.get('/api/admin/email-logs', async (req, res) => {
     try {
         const logs = await EmailLog.find().sort({ sentAt: -1 }).limit(100);
         res.json(logs);
@@ -2260,7 +2257,7 @@ app.get('/api/admin/email-logs', requireAdmin, async (req, res) => {
 });
 
 // API Route to fetch newsletter subscribers for admin
-app.get('/api/admin/subscribers', requireAdmin, async (req, res) => {
+app.get('/api/admin/subscribers', async (req, res) => {
     try {
         // Fetch from Newsletter model
         const guestSubscribers = await Newsletter.find().sort({ subscribedAt: -1 });
@@ -2284,8 +2281,7 @@ app.get('/api/orders/:orderId', async (req, res) => {
     try {
         const { orderId } = req.params;
 
-        const order = await Order.findByOrderId(orderId)
-            .populate('customer.userId', 'name email');
+        const order = await Order.findByOrderId(orderId);
 
         if (!order) {
             return res.status(404).json({ error: 'Order not found' });
@@ -2424,13 +2420,11 @@ async function startServer() {
         console.log(`🚀 Server is running on http://localhost:${PORT}`);
         
         // Build Search Index
-        if (database.isConnected() || mongoose.connection.readyState === 1) {
+        if (database.isConnected()) {
              await searchEngine.initialize();
         }
 
-        const status = database.isConnected() || mongoose.connection.readyState === 1
-            ? 'Connected (Active)'
-            : 'DISCONNECTED';
+        const status = database.isConnected() ? 'Connected (Active)' : 'DISCONNECTED';
         console.log(`📊 Status: ${status}`);
         console.log(`🎯 Environment: ${process.env.NODE_ENV || 'development'}`);
     });

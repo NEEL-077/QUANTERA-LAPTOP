@@ -12,6 +12,50 @@ function addQAPair() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const getStoredAccessToken = () => {
+        if (typeof getAccessToken === 'function') {
+            return getAccessToken();
+        }
+        return localStorage.getItem('q_access') || sessionStorage.getItem('q_access');
+    };
+
+    const getStoredUser = () => {
+        if (typeof getUser === 'function') {
+            return getUser();
+        }
+        try {
+            const raw = localStorage.getItem('q_user') || sessionStorage.getItem('q_user');
+            return raw ? JSON.parse(raw) : null;
+        } catch {
+            return null;
+        }
+    };
+
+    const adminNameEl = document.getElementById('adminName');
+    const adminAvatarEl = document.getElementById('adminAvatar');
+    const currentUser = getStoredUser();
+    if (currentUser) {
+        if (adminNameEl) adminNameEl.textContent = currentUser.name || currentUser.email || 'Admin';
+        if (adminAvatarEl) {
+            const initials = (currentUser.name || currentUser.email || 'AD')
+                .split(' ')
+                .map(part => part[0])
+                .slice(0, 2)
+                .join('')
+                .toUpperCase();
+            adminAvatarEl.textContent = initials;
+        }
+    }
+
+    const showAdminAccessMessage = (message = 'Please sign in as an admin to view subscribers.') => {
+        const listEl = document.getElementById('subscribersList');
+        if (!listEl) return;
+        listEl.innerHTML = `
+            <div style="padding: 24px; color: var(--text-secondary); text-align: center;">
+                <p>${message}</p>
+            </div>
+        `;
+    };
 
     // --- THEME SWITCHING LOGIC ---
     const themeToggle = document.getElementById('theme-toggle');
@@ -339,6 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetId = tab.getAttribute('data-target');
             const targetSection = document.getElementById(targetId);
             if (targetSection) targetSection.classList.add('active');
+            // Load data for specific panels when shown
+            if (targetId === 'newsletterContainer') {
+                if (typeof loadNewsletterStats === 'function') loadNewsletterStats();
+            }
         });
     });
 
@@ -481,6 +529,78 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     }
 
+    // --- NEWSLETTER / EMAIL ADMIN HELPERS ---
+    async function loadNewsletterStats() {
+        try {
+
+            const res = await fetch('/api/admin/subscribers');
+
+            if (res.status === 401 || res.status === 403) {
+                console.error('Unauthorized access to subscribers.');
+                document.getElementById('totalSubscribers').textContent = 0;
+                document.getElementById('guestSubscribers').textContent = 0;
+                document.getElementById('userSubscribers').textContent = 0;
+                return;
+            }
+
+            const data = await res.json();
+            document.getElementById('totalSubscribers').textContent = data.totalCount || 0;
+            document.getElementById('guestSubscribers').textContent = (data.guests || []).length;
+            document.getElementById('userSubscribers').textContent = (data.users || []).length;
+
+            const listEl = document.getElementById('subscribersList');
+            if (!listEl) return;
+
+            // Build table of subscribers
+            let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">';
+            html += '<thead><tr style="text-align:left;border-bottom:2px solid var(--card-border)"><th style="padding:8px;color:var(--text-secondary)">Type</th><th style="padding:8px;color:var(--text-secondary)">Name / Email</th><th style="padding:8px;color:var(--text-secondary)">Source / Joined</th></tr></thead>';
+            html += '<tbody>';
+
+            (data.users || []).forEach(u => {
+                html += `<tr><td style="padding:10px;color:var(--accent-color);font-weight:700">User</td><td style="padding:10px;color:var(--text-primary)">${u.name || '—'}<div style="color:var(--text-secondary);font-size:0.85rem">${u.email}</div></td><td style="padding:10px;color:var(--text-secondary)">${new Date(u.createdAt).toLocaleString()}</td></tr>`;
+            });
+
+            (data.guests || []).forEach(g => {
+                html += `<tr><td style="padding:10px;color:var(--accent-color);font-weight:700">Guest</td><td style="padding:10px;color:var(--text-primary)">${g.email}</td><td style="padding:10px;color:var(--text-secondary)">${g.source || 'guest'} • ${new Date(g.subscribedAt).toLocaleString()}</td></tr>`;
+            });
+
+            html += '</tbody></table></div>';
+            listEl.innerHTML = html;
+        } catch (err) {
+            console.error('Error loading newsletter stats:', err);
+            const listEl = document.getElementById('subscribersList');
+            if (listEl) listEl.innerHTML = '<p style="color:var(--text-secondary)">Failed to load subscribers.</p>';
+        }
+    }
+
+    // Handle admin newsletter send form
+    const adminNewsletterForm = document.getElementById('adminNewsletterForm');
+    if (adminNewsletterForm) {
+        adminNewsletterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = adminNewsletterForm.querySelector('button[type="submit"]');
+            try {
+                btn.disabled = true;
+                const formData = new FormData(adminNewsletterForm);
+                const payload = Object.fromEntries(formData.entries());
+                const res = await fetch('/api/admin/newsletter/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to send newsletter');
+
+                alert(data.message || 'Newsletter queued');
+            } catch (err) {
+                console.error('Newsletter send error:', err);
+                alert('Failed to send newsletter: ' + (err.message || err));
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    }
     function getStockBadge(item) {
         const stock = item.stock ?? item.quantity;
         if (stock === null || stock === undefined) return '<span class="inv-stock-badge inv-stock-in">In Stock</span>';
