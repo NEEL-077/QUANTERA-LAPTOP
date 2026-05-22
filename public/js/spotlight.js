@@ -7,23 +7,32 @@
  * - Zero UI Modification Strategy
  */
 (function () {
+    const ICONS = {
+        home: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+        laptop: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>`,
+        headphones: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>`,
+        about: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
+        track: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+        user: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+    };
+
     // ─── Shortcut quick-links (System Static) ──────────────────────────────────
     const SHORTCUTS = [
-        { label: 'Home', icon: '🏠', url: '/' },
-        { label: 'Laptops', icon: '💻', url: '/laptops' },
-        { label: 'Accessories', icon: '🎧', url: '/accessories' },
-        { label: 'About', icon: '✨', url: '/about' },
-        { label: 'Track', icon: '📦', url: '/order-tracking' },
+        { label: 'Home', icon: ICONS.home, url: '/' },
+        { label: 'Laptops', icon: ICONS.laptop, url: '/laptops' },
+        { label: 'Accessories', icon: ICONS.headphones, url: '/accessories' },
+        { label: 'About', icon: ICONS.about, url: '/about' },
+        { label: 'Track', icon: ICONS.track, url: '/order-tracking' },
     ];
 
     // Static page results to merge with dynamic results
     const STATIC_PAGES = [
-        { title: 'Home', type: 'page', category: 'General', url: '/', icon: '🏠' },
-        { title: 'Laptop Collection', type: 'page', category: 'Store', url: '/laptops', icon: '💻' },
-        { title: 'Accessories Store', type: 'page', category: 'Store', url: '/accessories', icon: '🎧' },
-        { title: 'About Quantéra', type: 'page', category: 'Company', url: '/about', icon: '✨' },
-        { title: 'Track Your Order', type: 'page', category: 'Support', url: '/order-tracking', icon: '📦' },
-        { title: 'Sign In / Account', type: 'page', category: 'User', url: '/auth.html', icon: '🔑' },
+        { title: 'Home', type: 'page', category: 'General', url: '/', icon: ICONS.home },
+        { title: 'Laptop Collection', type: 'page', category: 'Store', url: '/laptops', icon: ICONS.laptop },
+        { title: 'Accessories Store', type: 'page', category: 'Store', url: '/accessories', icon: ICONS.headphones },
+        { title: 'About Quantéra', type: 'page', category: 'Company', url: '/about', icon: ICONS.about },
+        { title: 'Track Your Order', type: 'page', category: 'Support', url: '/order-tracking', icon: ICONS.track },
+        { title: 'Sign In / Account', type: 'page', category: 'User', url: '/auth.html', icon: ICONS.user },
     ];
 
     let isOpen = false;
@@ -90,7 +99,7 @@
         resultsList.innerHTML = results.map((r, i) => {
            const iconHtml = r.image
                 ? `<img src="${r.image.startsWith('/') ? r.image : '/' + r.image}" alt="${r.title || r.label}" loading="lazy">`
-                : `<span>${r.icon || (r.type === 'laptop' ? '💻' : '🎧')}</span>`;
+                : `<span>${r.icon || (r.type === 'laptop' ? ICONS.laptop : ICONS.headphones)}</span>`;
             const subtext = r.type 
                 ? `${r.type.toUpperCase()} • ${r.price ? '₹'+r.price.toLocaleString() : (r.category || '')}` 
                 : `PAGE • ${r.category || 'System'}`;

@@ -12,6 +12,7 @@
   "author": "NEEL LUVANI",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^2.6.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "express": "^4.18.2",
